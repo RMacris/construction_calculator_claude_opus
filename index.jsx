@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { defaultInp, defaultInpB } from "./src/constants.js";
 import { fmtBRL, fmtN, num } from "./src/utils.js";
 import { calcular } from "./src/logic/calcular.js";
@@ -7,17 +7,39 @@ import { Resumo } from "./src/components/Resumo.jsx";
 import { Metric } from "./src/components/Metric.jsx";
 import { PieChartPanel, ComparisonBarChart } from "./src/components/Charts.jsx";
 
+const STORAGE_KEY = "simulador_construcao_state";
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
 
 export default function SimuladorConstrucao() {
-  const [inpA, setInpA] = useState(defaultInp);
-  const [inpB, setInpB] = useState(defaultInpB);
-  const [presetA, setPresetA] = useState("ultraEcon");
-  const [presetB, setPresetB] = useState("popular");
-  const [customM2A, setCustomM2A] = useState("");
-  const [customM2B, setCustomM2B] = useState("");
-  const [overA, setOverA] = useState({});
-  const [overB, setOverB] = useState({});
-  const [comparar, setComparar] = useState(false);
+  const saved = loadState();
+  const [inpA, setInpA] = useState(saved?.inpA ?? defaultInp);
+  const [inpB, setInpB] = useState(saved?.inpB ?? defaultInpB);
+  const [presetA, setPresetA] = useState(saved?.presetA ?? "ultraEcon");
+  const [presetB, setPresetB] = useState(saved?.presetB ?? "popular");
+  const [customM2A, setCustomM2A] = useState(saved?.customM2A ?? "");
+  const [customM2B, setCustomM2B] = useState(saved?.customM2B ?? "");
+  const [overA, setOverA] = useState(saved?.overA ?? {});
+  const [overB, setOverB] = useState(saved?.overB ?? {});
+  const [comparar, setComparar] = useState(saved?.comparar ?? false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        inpA, inpB, presetA, presetB, customM2A, customM2B, overA, overB, comparar
+      }));
+    } catch {
+      // storage quota exceeded or unavailable — fail silently
+    }
+  }, [inpA, inpB, presetA, presetB, customM2A, customM2B, overA, overB, comparar]);
 
   const resA = useMemo(() => calcular(inpA, overA, presetA, num(customM2A)), [inpA, overA, presetA, customM2A]);
   const resB = useMemo(() => calcular(inpB, overB, presetB, num(customM2B)), [inpB, overB, presetB, customM2B]);
