@@ -11,12 +11,12 @@ export function resolverCampos(inpRaw) {
 
   switch (calc) {
     case "nPav": {
-      const p = A_apt > 0 ? Math.floor(A_pav * K_UTIL / A_apt) : 0;
+      const p = A_apt > 0 ? Math.floor(A_pav / A_apt) : 0;
       n_pav = p > 0 ? Math.max(1, Math.ceil(n_apt / p)) : 1;
       break;
     }
     case "nApt": {
-      const p = A_apt > 0 ? Math.floor(A_pav * K_UTIL / A_apt) : 0;
+      const p = A_apt > 0 ? Math.floor(A_pav / A_apt) : 0;
       n_apt = p * Math.max(1, n_pav);
       break;
     }
@@ -24,7 +24,7 @@ export function resolverCampos(inpRaw) {
       if (n_apt > 0 && n_pav > 0) {
         const pNeeded = Math.ceil(n_apt / n_pav);
         A_apt = pNeeded > 0
-          ? Math.floor((A_pav * K_UTIL / pNeeded) * 10) / 10
+          ? Math.floor((A_pav / pNeeded) * 10) / 10
           : A_apt;
       }
       break;
@@ -32,7 +32,7 @@ export function resolverCampos(inpRaw) {
     case "areaPavimento": {
       if (n_apt > 0 && n_pav > 0 && A_apt > 0) {
         const pNeeded = Math.ceil(n_apt / n_pav);
-        A_pav = Math.ceil(A_apt * pNeeded / K_UTIL);
+        A_pav = Math.ceil(A_apt * pNeeded);
       }
       break;
     }
@@ -53,9 +53,8 @@ export function geometria(inpRaw) {
     vedacao:       inpRaw.vedacao
   };
   const areaProjecao = inp.areaPavimento;
-  const areaUtilAndar = areaProjecao * K_UTIL;
   const aptosPorAndar = Math.max(0,
-    Math.floor(areaUtilAndar / Math.max(1, inp.areaApto)));
+    Math.floor(areaProjecao / Math.max(1, inp.areaApto)));
   const pavimentos = Math.max(1, inp.nPav);
   const totalAptos = Math.max(0, inp.nApt);
   const capacidade = aptosPorAndar * pavimentos;
