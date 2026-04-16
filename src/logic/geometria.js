@@ -98,12 +98,22 @@ export function geometria(inpRaw) {
   const areaSalaCoz    = inp.areaApto - inp.areaBanheiro - 8;
   const aptoValido     = areaSalaCoz >= 6 && inp.areaBanheiro >= 2 && inp.areaApto >= 20;
 
+  // --- Fatores de escala (leis de potência, calibrados com CUB/SINAPI) ---
+  // Fundação: carga ∝ pav, dimensionamento escala sub-linearmente (sapatas/estacas maiores)
+  const fatorCarga   = Math.pow(pavimentos, 0.8);
+  // Estrutura: sobrecusto por m² (pilares maiores na base, vento ∝ h², bombeamento)
+  // Aplicado sobre areaTotal (já ∝ pav), custo efetivo ∝ pav^1.25
+  const fatorAltura  = Math.pow(pavimentos, 0.25);
+  // Canteiro/duração: sub-linear (economia de escala, equipe estabilizada)
+  const fatorDuracao = Math.pow(pavimentos, 0.55);
+
   return {
     areaProjecao, areaUtilPav, areaCirculacao,
     aptosPorAndar, pavimentos, totalAptos, areaTotal, areaUtilTotal,
     capacidade, aptosVazios,
     perimetroApto, perimetroBanh, areaParedeApto, areaParedeTot,
     areaAzulBanh, areaAzulCoz, areaAzulTot, areaSalaCoz, aptoValido,
+    fatorCarga, fatorAltura, fatorDuracao,
     modalidade: inp.modalidade, vedacao: inp.vedacao,
     resolved: {
       A_pav: r.A_pav, A_apt: r.A_apt, n_apt: r.n_apt, n_pav: r.n_pav

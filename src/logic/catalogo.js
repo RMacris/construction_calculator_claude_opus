@@ -7,91 +7,91 @@ export function catalogo(modalidade, vedacao) {
     { k: "tapume",   nome: "Tapume de madeira h=2,2m", un: "m²",
       qtd: g => Math.ceil(4 * Math.sqrt(g.areaProjecao) * 2.2), base: 68 },
     { k: "locacao",  nome: "Locação + topografia", un: "vb",
-      qtd: g => 1, base: 4200 },
+      qtd: g => Math.max(1, Math.ceil(g.areaProjecao / 500 * g.fatorDuracao)), base: 4200 },
     { k: "barracao", nome: "Barracão de obra", un: "m²",
-      qtd: g => Math.ceil(g.areaProjecao * 0.04), base: 720 },
+      qtd: g => Math.ceil(g.areaProjecao * 0.04 * g.fatorDuracao), base: 720 },
     { k: "provis",   nome: "Instalações provisórias", un: "vb",
-      qtd: g => 1, base: 6500 }
+      qtd: g => Math.ceil(g.fatorDuracao), base: 6500 }
   ]};
   const fundacao = { id: "fundacao", nome: `Fundação — ${MODALIDADES[modalidade].label}`,
     mats: modalidade === "alv_estrutural" ? [
       { k: "radier_ae",    nome: "Radier / sapata corrida fck 20", un: "m³",
-        qtd: g => Math.ceil(g.areaProjecao * 0.12 * w), base: 320 },
+        qtd: g => Math.ceil(g.areaProjecao * 0.12 * w * g.fatorCarga), base: 320 },
       { k: "tela_ae",      nome: "Tela soldada Q92",              un: "m²",
-        qtd: g => Math.ceil(g.areaProjecao * 1.05),              base: 32 },
+        qtd: g => Math.ceil(g.areaProjecao * 1.05 * g.fatorCarga), base: 32 },
       { k: "imperm_ae",    nome: "Impermeabilização + lona",      un: "m²",
         qtd: g => Math.ceil(g.areaProjecao),                     base: 38 },
       { k: "lastro_ae",    nome: "Lastro brita + regularização",  un: "m²",
         qtd: g => Math.ceil(g.areaProjecao),                     base: 35 }
     ] : modalidade === "steelframe" ? [
       { k: "radier_conc",  nome: "Concreto radier fck 25", un: "m³",
-        qtd: g => Math.ceil(g.areaProjecao * 0.15 * w), base: 340 },
+        qtd: g => Math.ceil(g.areaProjecao * 0.15 * w * g.fatorCarga), base: 340 },
       { k: "tela_sold",    nome: "Tela soldada Q138",      un: "m²",
-        qtd: g => Math.ceil(g.areaProjecao * 1.05),       base: 42 },
+        qtd: g => Math.ceil(g.areaProjecao * 1.05 * g.fatorCarga), base: 42 },
       { k: "lona_brita",   nome: "Lona plástica + brita",   un: "m²",
         qtd: g => Math.ceil(g.areaProjecao),               base: 30 },
       { k: "imperm_rad",   nome: "Impermeabilização radier", un: "m²",
         qtd: g => Math.ceil(g.areaProjecao),               base: 52 }
     ] : modalidade === "metalica" ? [
       { k: "estaca_helice", nome: "Estaca hélice contínua", un: "m",
-        qtd: g => Math.ceil(g.areaProjecao * 0.9),          base: 210 },
+        qtd: g => Math.ceil(g.areaProjecao * 0.9 * g.fatorCarga), base: 210 },
       { k: "conc_blocos",   nome: "Concreto blocos/vigas fck 25", un: "m³",
-        qtd: g => Math.ceil(g.areaProjecao * 0.12 * w),     base: 370 },
+        qtd: g => Math.ceil(g.areaProjecao * 0.12 * w * g.fatorCarga), base: 370 },
       { k: "aco_fund",      nome: "Aço CA-50 fundação",     un: "kg",
-        qtd: g => Math.ceil(g.areaProjecao * 35 * w),       base: 10 },
+        qtd: g => Math.ceil(g.areaProjecao * 35 * w * g.fatorCarga), base: 10 },
       { k: "formas_fund",   nome: "Formas de madeira",      un: "m²",
-        qtd: g => Math.ceil(g.areaProjecao * 0.8),          base: 98 }
+        qtd: g => Math.ceil(g.areaProjecao * 0.8 * g.fatorCarga), base: 98 }
     ] : [
       { k: "estaca_sap",    nome: "Estaca / sapata concreto fck 25", un: "m³",
-        qtd: g => Math.ceil(g.areaProjecao * 0.20 * w),     base: 420 },
+        qtd: g => Math.ceil(g.areaProjecao * 0.20 * w * g.fatorCarga), base: 420 },
       { k: "aco_fund",      nome: "Aço CA-50 fundação",     un: "kg",
-        qtd: g => Math.ceil(g.areaProjecao * 55 * w),       base: 10 },
+        qtd: g => Math.ceil(g.areaProjecao * 55 * w * g.fatorCarga), base: 10 },
       { k: "formas_fund",   nome: "Formas de madeira",      un: "m²",
-        qtd: g => Math.ceil(g.areaProjecao * 1.2),          base: 98 },
+        qtd: g => Math.ceil(g.areaProjecao * 1.2 * g.fatorCarga), base: 98 },
       { k: "lastro",        nome: "Lastro brita + regularização", un: "m²",
         qtd: g => Math.ceil(g.areaProjecao),                base: 42 }
     ]};
   const estrutura = { id: "estrutura", nome: `Estrutura — ${MODALIDADES[modalidade].label}`,
     mats: modalidade === "alv_estrutural" ? [
       { k: "bloco_estr",   nome: "Bloco concreto estrutural 14×19×39", un: "un",
-        qtd: g => Math.ceil(g.areaParedeTot * 13 * w), base: 3.50 },
+        qtd: g => Math.ceil(g.areaParedeTot * 13 * w * g.fatorAltura), base: 3.50 },
       { k: "graute",       nome: "Graute fck 20 (canaletas/vertic.)", un: "L",
-        qtd: g => Math.ceil(g.areaParedeTot * 2), base: 1.80 },
+        qtd: g => Math.ceil(g.areaParedeTot * 2 * g.fatorAltura), base: 1.80 },
       { k: "aco_ae",       nome: "Aço CA-50/CA-60 (canaletas)",  un: "kg",
-        qtd: g => Math.ceil(g.areaParedeTot * 4 * w), base: 10 },
+        qtd: g => Math.ceil(g.areaParedeTot * 4 * w * g.fatorAltura), base: 10 },
       { k: "argam_ae",     nome: "Argamassa assentamento",        un: "kg",
-        qtd: g => Math.ceil(g.areaParedeTot * 18), base: 1.3 },
+        qtd: g => Math.ceil(g.areaParedeTot * 18 * g.fatorAltura), base: 1.3 },
       { k: "laje_pre",     nome: "Laje pré-moldada treliçada + capa", un: "m²",
-        qtd: g => Math.ceil(g.areaTotal * 1.05), base: 95 },
+        qtd: g => Math.ceil(g.areaTotal * 1.05 * g.fatorAltura), base: 95 },
       { k: "vergas_ae",    nome: "Canaletas U (vergas/contravergas)", un: "m",
-        qtd: g => Math.ceil(g.perimetroApto * 0.6 * g.totalAptos), base: 12 }
+        qtd: g => Math.ceil(g.perimetroApto * 0.6 * g.totalAptos * g.fatorAltura), base: 12 }
     ] : modalidade === "steelframe" ? [
       { k: "perfis_lsf",   nome: "Perfis aço galvanizado LSF", un: "kg",
-        qtd: g => Math.ceil(g.areaTotal * 18 * w), base: 17 },
+        qtd: g => Math.ceil(g.areaTotal * 18 * w * g.fatorAltura), base: 17 },
       { k: "osb",          nome: "OSB estrutural 11,1mm",     un: "m²",
-        qtd: g => Math.ceil(g.areaParedeTot * 1.05 + g.areaTotal * 0.3), base: 78 },
+        qtd: g => Math.ceil((g.areaParedeTot * 1.05 + g.areaTotal * 0.3) * g.fatorAltura), base: 78 },
       { k: "paraf_lsf",    nome: "Parafusos autoperfurantes", un: "mi",
-        qtd: g => Math.ceil(g.areaTotal * 0.08), base: 210 },
+        qtd: g => Math.ceil(g.areaTotal * 0.08 * g.fatorAltura), base: 210 },
       { k: "membrana",     nome: "Membrana hidrófuga",        un: "m²",
-        qtd: g => Math.ceil(g.areaParedeApto * g.totalAptos * 0.6), base: 22 }
+        qtd: g => Math.ceil(g.areaParedeApto * g.totalAptos * 0.6 * g.fatorAltura), base: 22 }
     ] : modalidade === "metalica" ? [
       { k: "perfis_pes",   nome: "Perfis estruturais I/H/W",  un: "kg",
-        qtd: g => Math.ceil(g.areaTotal * 45 * w), base: 22 },
+        qtd: g => Math.ceil(g.areaTotal * 45 * w * g.fatorAltura), base: 22 },
       { k: "steel_deck",   nome: "Laje steel deck (painel)",  un: "m²",
-        qtd: g => Math.ceil(g.areaTotal * 0.95), base: 145 },
+        qtd: g => Math.ceil(g.areaTotal * 0.95 * g.fatorAltura), base: 145 },
       { k: "cap_conc",     nome: "Concreto capeamento fck 25", un: "m³",
-        qtd: g => Math.ceil(g.areaTotal * 0.10 * w), base: 360 },
+        qtd: g => Math.ceil(g.areaTotal * 0.10 * w * g.fatorAltura), base: 360 },
       { k: "solda_chumb",  nome: "Solda/parafusos/chumbadores", un: "vb",
-        qtd: g => Math.ceil(g.areaTotal), base: 88 }
+        qtd: g => Math.ceil(g.areaTotal * g.fatorAltura), base: 88 }
     ] : [
       { k: "conc_estr",    nome: "Concreto fck 30 (pilar/viga/laje)", un: "m³",
-        qtd: g => Math.ceil(g.areaTotal * 0.22 * w), base: 390 },
+        qtd: g => Math.ceil(g.areaTotal * 0.22 * w * g.fatorAltura), base: 390 },
       { k: "aco_estr",     nome: "Aço CA-50 estrutura",       un: "kg",
-        qtd: g => Math.ceil(g.areaTotal * 18 * w), base: 10 },
+        qtd: g => Math.ceil(g.areaTotal * 18 * w * g.fatorAltura), base: 10 },
       { k: "formas_estr",  nome: "Formas de madeira compensada", un: "m²",
-        qtd: g => Math.ceil(g.areaTotal * 2.4), base: 98 },
+        qtd: g => Math.ceil(g.areaTotal * 2.4 * g.fatorAltura), base: 98 },
       { k: "escora",       nome: "Escoramento metálico (loc.)", un: "m²",
-        qtd: g => Math.ceil(g.areaTotal * 0.8), base: 42 }
+        qtd: g => Math.ceil(g.areaTotal * 0.8 * g.fatorAltura), base: 42 }
     ]};
   const ved = { id: "vedacao", nome: `Vedação interna — ${VEDACOES[vedacao].label}`,
     mats: vedacao === "alvenaria" ? [
@@ -171,7 +171,7 @@ export function catalogo(modalidade, vedacao) {
     { k: "registros", nome: "Registros e válvulas",       un: "cj",
       qtd: g => g.totalAptos, base: 520 },
     { k: "cx_agua",   nome: "Caixa d'água + barrilete",   un: "vb",
-      qtd: g => 1, base: 10000 }
+      qtd: g => Math.max(1, Math.ceil(Math.pow(g.totalAptos, 0.65) / 4)), base: 10000 }
   ]};
   const eletrica = { id: "eletrica", nome: "Instalações Elétricas", mats: [
     { k: "qdc",     nome: "Quadro distribuição (QDC)",  un: "un",
