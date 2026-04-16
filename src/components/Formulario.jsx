@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { MODALIDADES, VEDACOES, CAMPOS_CALC, CUB_REFERENCIAS } from "../constants.js";
 import { resolverCampos } from "../logic/geometria.js";
 import { NumInput, inputStyle } from "./NumInput.jsx";
 import { Campo } from "./Campo.jsx";
+import { ConfirmModal } from "./ConfirmModal.jsx";
 
-export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetPrecos }) {
-  const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
+export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetPrecos, onResetInp }) {  const [confirmReset, setConfirmReset] = useState(false);  const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
   const setS = (k) => (e) => setInp({ ...inp, [k]: e.target.value });
   const vedOk = Object.entries(VEDACOES).filter(([k]) =>
     !(inp.modalidade === "steelframe" && k === "alvenaria"));
@@ -132,12 +133,26 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetPreco
         </div>
       </Campo>
 
-      <div style={{ marginTop: 8 }}>
+      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
         <button onClick={onResetPrecos} style={{
           padding: "6px 12px", border: "1px solid #cbd5e1", borderRadius: 6,
           background: "#f8fafc", fontSize: 12, cursor: "pointer", width: "100%"
         }}>Resetar preços para base do catálogo</button>
+        <button onClick={() => setConfirmReset(true)} style={{
+          padding: "6px 12px", border: "1px solid #fca5a5", borderRadius: 6,
+          background: "#fef2f2", color: "#b91c1c", fontSize: 12,
+          cursor: "pointer", width: "100%", fontWeight: 600
+        }}>⟳ Resetar todos os inputs para o padrão</button>
       </div>
+
+      {confirmReset && (
+        <ConfirmModal
+          title="Resetar inputs do formulário?"
+          message={`Todos os valores de "${titulo}" (área, pavimentos, apartamentos, etc.) serão restaurados para os valores padrão. Esta ação não pode ser desfeita.`}
+          onConfirm={() => { onResetInp(); setConfirmReset(false); }}
+          onCancel={() => setConfirmReset(false)}
+        />
+      )}
     </div>
   );
 }

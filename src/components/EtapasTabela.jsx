@@ -3,6 +3,7 @@ import { CORES } from "../constants.js";
 import { fmtBRL, fmtN } from "../utils.js";
 import { NumInput } from "./NumInput.jsx";
 import { MaterialModal } from "./MaterialModal.jsx";
+import { ConfirmModal } from "./ConfirmModal.jsx";
 
 const cellInp = {
   width: "100%", padding: "3px 5px", fontSize: 11,
@@ -112,8 +113,42 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
   const [expanded, setExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [modalMat, setModalMat] = useState(null);
+  const [confirmReset, setConfirmReset] = useState(false);
   const pct = e.valor / (custoTotal || 1);
   const customList = (over.custom || {})[e.id] || [];
+
+  // Reset all overrides for this etapa (precos, qtds, removidos, custom, dims)
+  const resetEtapa = () => {
+    const next = { ...over };
+    const prefix = `${e.id}.`;
+    if (next.precos) {
+      next.precos = Object.fromEntries(
+        Object.entries(next.precos).filter(([k]) => !k.startsWith(prefix))
+      );
+    }
+    if (next.qtds) {
+      next.qtds = Object.fromEntries(
+        Object.entries(next.qtds).filter(([k]) => !k.startsWith(prefix))
+      );
+    }
+    if (next.removidos) {
+      next.removidos = Object.fromEntries(
+        Object.entries(next.removidos).filter(([k]) => !k.startsWith(prefix))
+      );
+    }
+    if (next.dims) {
+      next.dims = Object.fromEntries(
+        Object.entries(next.dims).filter(([k]) => !k.startsWith(prefix))
+      );
+    }
+    if (next.custom) {
+      const { [e.id]: _removed, ...rest } = next.custom;
+      next.custom = rest;
+    }
+    setOver(next);
+    setConfirmReset(false);
+    setEditMode(false);
+  };
 
   const adicionarCustom = () => {
     const custom = { ...(over.custom || {}) };
@@ -161,14 +196,26 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
             <span style={{ fontSize: 11, color: "#64748b" }}>
               {e.mats.length} {e.mats.length === 1 ? "item" : "itens"}
             </span>
-            <button
-              onClick={(ev) => { ev.stopPropagation(); setEditMode(v => !v); }}
-              style={{
-                padding: "4px 10px", fontSize: 11, border: "1px solid #cbd5e1",
-                borderRadius: 4, background: editMode ? "#fef3c7" : "#fff", cursor: "pointer"
-              }}>
-              {editMode ? "✓ Pronto" : "✎ Editar itens"}
-            </button>
+            <div style={{ display: "flex", gap: 6 }}>
+              <button
+                onClick={() => setConfirmReset(true)}
+                title="Resetar todos os dados desta etapa"
+                style={{
+                  padding: "4px 8px", fontSize: 11, border: "1px solid #fca5a5",
+                  borderRadius: 4, background: "#fef2f2", color: "#b91c1c",
+                  cursor: "pointer"
+                }}>
+                ⟳ Reset
+              </button>
+              <button
+                onClick={(ev) => { ev.stopPropagation(); setEditMode(v => !v); }}
+                style={{
+                  padding: "4px 10px", fontSize: 11, border: "1px solid #cbd5e1",
+                  borderRadius: 4, background: editMode ? "#fef3c7" : "#fff", cursor: "pointer"
+                }}>
+                {editMode ? "✓ Pronto" : "✎ Editar itens"}
+              </button>
+            </div>
           </div>
           <div className="table-responsive">
             <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", minWidth: 340 }}>
@@ -202,6 +249,14 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
           {modalMat && (
             <MaterialModal mat={modalMat} onClose={() => setModalMat(null)}
                            onSave={handleModalSave} />
+          )}
+          {confirmReset && (
+            <ConfirmModal
+              title={`Resetar etapa "${e.nome}"?`}
+              message="Todos os preços, quantidades, itens removidos e materiais adicionados nesta etapa serão apagados e restaurados para os valores calculados automaticamente."
+              onConfirm={resetEtapa}
+              onCancel={() => setConfirmReset(false)}
+            />
           )}
         </div>
       )}
