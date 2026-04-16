@@ -15,8 +15,8 @@ export function Resumo({ titulo, cor, inp, res, over, setOver }) {
 
   // Encontrar a referência CUB mais próxima
   const cubEntries = Object.values(CUB_REFERENCIAS);
-  const cubProximo = cubEntries.reduce((best, c) =>
-    Math.abs(c.custoM2 - res.custoM2) < Math.abs(best.custoM2 - res.custoM2) ? c : best
+  const cubProximo = cubEntries.reduce((melhorReferenciaCub, referenciaCubAtual) =>
+    Math.abs(referenciaCubAtual.custoM2 - res.custoM2) < Math.abs(melhorReferenciaCub.custoM2 - res.custoM2) ? referenciaCubAtual : melhorReferenciaCub
   , cubEntries[0]);
 
   const desvio = cubProximo.custoM2 > 0
@@ -28,11 +28,11 @@ export function Resumo({ titulo, cor, inp, res, over, setOver }) {
       background: "#fff", border: `2px solid ${cor}`, flex: 1, minWidth: 280
     }}>
       <h3 style={{ margin: "0 0 10px", color: cor, fontSize: 15 }}>{titulo}</h3>
-      {alertas.map((a, i) => (
+      {alertas.map((mensagemAlerta, i) => (
         <div key={i} style={{
           background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca",
           padding: 8, borderRadius: 6, fontSize: 12, marginBottom: 6
-        }}>⚠ {a}</div>
+        }}>⚠ {mensagemAlerta}</div>
       ))}
       <div className="metrics-grid">
         <Metric label="Custo direto (s/ BDI)"  valor={fmtBRL(res.custoDireto)} />
@@ -65,14 +65,14 @@ export function Resumo({ titulo, cor, inp, res, over, setOver }) {
           Comparação com CUB/SINAPI
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
-          {cubEntries.map((c, i) => (
+          {cubEntries.map((referenciaCub, i) => (
             <span key={i} style={{
               padding: "2px 6px", borderRadius: 4, fontSize: 11,
-              background: c === cubProximo ? "#0369a1" : "#e0f2fe",
-              color: c === cubProximo ? "#fff" : "#0c4a6e",
-              fontWeight: c === cubProximo ? 700 : 400
+              background: referenciaCub === cubProximo ? "#0369a1" : "#e0f2fe",
+              color: referenciaCub === cubProximo ? "#fff" : "#0c4a6e",
+              fontWeight: referenciaCub === cubProximo ? 700 : 400
             }}>
-              {c.label}: {fmtBRL(c.custoM2)}/m²
+              {referenciaCub.label}: {fmtBRL(referenciaCub.custoM2)}/m²
             </span>
           ))}
         </div>

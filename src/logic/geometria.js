@@ -9,52 +9,52 @@ export const K_UTIL = 0.85;
 export const FATOR_FORMA = 1.15;
 
 export function resolverCampos(inpRaw) {
-  let A_pav = num(inpRaw.areaPavimento);
-  let A_apt = num(inpRaw.areaApto);
-  let n_apt = num(inpRaw.nApt);
-  let n_pav = num(inpRaw.nPav);
+  let areaPavimentoBruta = num(inpRaw.areaPavimento);
+  let areaApartamentoPrivativa = num(inpRaw.areaApto);
+  let numeroApartamentos = num(inpRaw.nApt);
+  let numeroPavimentos = num(inpRaw.nPav);
   const calc = inpRaw.calculado || "nPav";
 
   switch (calc) {
     case "nPav": {
       // Quantos aptos cabem por andar, considerando área útil
-      const p = A_apt > 0 ? Math.floor((A_pav * K_UTIL) / A_apt) : 0;
-      n_pav = p > 0 ? Math.max(1, Math.ceil(n_apt / p)) : 1;
+      const apartamentosPorAndar = areaApartamentoPrivativa > 0 ? Math.floor((areaPavimentoBruta * K_UTIL) / areaApartamentoPrivativa) : 0;
+      numeroPavimentos = apartamentosPorAndar > 0 ? Math.max(1, Math.ceil(numeroApartamentos / apartamentosPorAndar)) : 1;
       break;
     }
     case "nApt": {
-      const p = A_apt > 0 ? Math.floor((A_pav * K_UTIL) / A_apt) : 0;
-      n_apt = p * Math.max(1, n_pav);
+      const apartamentosPorAndar = areaApartamentoPrivativa > 0 ? Math.floor((areaPavimentoBruta * K_UTIL) / areaApartamentoPrivativa) : 0;
+      numeroApartamentos = apartamentosPorAndar * Math.max(1, numeroPavimentos);
       break;
     }
     case "areaApto": {
-      if (n_apt > 0 && n_pav > 0) {
-        const pNeeded = Math.ceil(n_apt / n_pav);
-        A_apt = pNeeded > 0
-          ? Math.floor(((A_pav * K_UTIL) / pNeeded) * 10) / 10
-          : A_apt;
+      if (numeroApartamentos > 0 && numeroPavimentos > 0) {
+        const apartamentosNecessarios = Math.ceil(numeroApartamentos / numeroPavimentos);
+        areaApartamentoPrivativa = apartamentosNecessarios > 0
+          ? Math.floor(((areaPavimentoBruta * K_UTIL) / apartamentosNecessarios) * 10) / 10
+          : areaApartamentoPrivativa;
       }
       break;
     }
     case "areaPavimento": {
-      if (n_apt > 0 && n_pav > 0 && A_apt > 0) {
-        const pNeeded = Math.ceil(n_apt / n_pav);
+      if (numeroApartamentos > 0 && numeroPavimentos > 0 && areaApartamentoPrivativa > 0) {
+        const apartamentosNecessarios = Math.ceil(numeroApartamentos / numeroPavimentos);
         // Área bruta necessária = área útil / K_UTIL
-        A_pav = Math.ceil((A_apt * pNeeded) / K_UTIL);
+        areaPavimentoBruta = Math.ceil((areaApartamentoPrivativa * apartamentosNecessarios) / K_UTIL);
       }
       break;
     }
   }
-  return { A_pav, A_apt, n_apt, n_pav };
+  return { A_pav: areaPavimentoBruta, A_apt: areaApartamentoPrivativa, n_apt: numeroApartamentos, n_pav: numeroPavimentos };
 }
 
 export function geometria(inpRaw) {
-  const r = resolverCampos(inpRaw);
+  const camposResolvidos = resolverCampos(inpRaw);
   const inp = {
-    areaPavimento: r.A_pav,
-    areaApto:      r.A_apt,
-    nApt:          r.n_apt,
-    nPav:          r.n_pav,
+    areaPavimento: camposResolvidos.A_pav,
+    areaApto:      camposResolvidos.A_apt,
+    nApt:          camposResolvidos.n_apt,
+    nPav:          camposResolvidos.n_pav,
     areaBanheiro:  num(inpRaw.areaBanheiro),
     peDireito:     num(inpRaw.peDireito),
     modalidade:    inpRaw.modalidade,
@@ -161,7 +161,7 @@ export function geometria(inpRaw) {
     volumeFundacao,
     modalidade: inp.modalidade, vedacao: inp.vedacao,
     resolved: {
-      A_pav: r.A_pav, A_apt: r.A_apt, n_apt: r.n_apt, n_pav: r.n_pav
+      A_pav: camposResolvidos.A_pav, A_apt: camposResolvidos.A_apt, n_apt: camposResolvidos.n_apt, n_pav: camposResolvidos.n_pav
     }
   };
 }

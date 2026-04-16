@@ -7,8 +7,8 @@ import { fmtN } from "../utils.js";
 const dimFields = (dims) => {
   if (!dims) return [];
   return Object.entries(dims)
-    .filter(([k]) => k !== "un")
-    .map(([k, v]) => ({ key: k, label: DIM_LABELS[k] || k, value: v }));
+    .filter(([chaveDimensao]) => chaveDimensao !== "un")
+    .map(([chaveDimensao, valorDimensao]) => ({ key: chaveDimensao, label: DIM_LABELS[chaveDimensao] || chaveDimensao, value: valorDimensao }));
 };
 
 export function MaterialModal({ mat, onSave, onClose }) {
@@ -16,11 +16,11 @@ export function MaterialModal({ mat, onSave, onClose }) {
   const [preco, setPreco] = useState(String(mat.punit).replace(".", ","));
   const [dims, setDims] = useState(() => {
     if (!mat.dims) return null;
-    const d = {};
-    for (const [k, v] of Object.entries(mat.dims)) {
-      if (k !== "un") d[k] = String(v).replace(".", ",");
+    const dimensoesTexto = {};
+    for (const [chaveDimensao, valorDimensao] of Object.entries(mat.dims)) {
+      if (chaveDimensao !== "un") dimensoesTexto[chaveDimensao] = String(valorDimensao).replace(".", ",");
     }
-    return d;
+    return dimensoesTexto;
   });
 
   useEffect(() => {
@@ -36,8 +36,8 @@ export function MaterialModal({ mat, onSave, onClose }) {
     const result = { nome, preco };
     if (dims) {
       const parsed = {};
-      for (const [k, v] of Object.entries(dims)) {
-        parsed[k] = parseFloat(String(v).replace(",", ".")) || 0;
+      for (const [chaveDimensao, valorDimensao] of Object.entries(dims)) {
+        parsed[chaveDimensao] = parseFloat(String(valorDimensao).replace(",", ".")) || 0;
       }
       result.dims = parsed;
     }
@@ -56,7 +56,7 @@ export function MaterialModal({ mat, onSave, onClose }) {
           <label className="modal-field">
             <span className="modal-label">Nome do material</span>
             <input type="text" value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={evento => setNome(evento.target.value)}
               style={inputStyle} />
           </label>
 
@@ -66,12 +66,12 @@ export function MaterialModal({ mat, onSave, onClose }) {
                 Dimensões {unDims && <span style={{ color: "#64748b" }}>({unDims})</span>}
               </span>
               <div className="modal-dims-grid">
-                {fields.map(f => (
-                  <label key={f.key} className="modal-field" style={{ margin: 0 }}>
-                    <span style={{ fontSize: 11, color: "#475569", marginBottom: 2 }}>{f.label}</span>
+                {fields.map(campoDimensao => (
+                  <label key={campoDimensao.key} className="modal-field" style={{ margin: 0 }}>
+                    <span style={{ fontSize: 11, color: "#475569", marginBottom: 2 }}>{campoDimensao.label}</span>
                     <NumInput
-                      value={dims[f.key]}
-                      onChange={v => setDims({ ...dims, [f.key]: v })}
+                      value={dims[campoDimensao.key]}
+                      onChange={v => setDims({ ...dims, [campoDimensao.key]: v })}
                       style={inputStyle}
                     />
                   </label>
@@ -80,11 +80,11 @@ export function MaterialModal({ mat, onSave, onClose }) {
               {dims && (
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
                   Área da peça: {(() => {
-                    const vals = Object.entries(dims)
-                      .map(([, v]) => parseFloat(String(v).replace(",", ".")) || 0);
+                    const valoresDimensoes = Object.entries(dims)
+                      .map(([, valorDimensao]) => parseFloat(String(valorDimensao).replace(",", ".")) || 0);
                     const divisor = unDims === "cm" ? 10000 : 1;
-                    const area = vals.reduce((a, b) => a * b, 1) / divisor;
-                    return `${fmtN(area, 4)} m²`;
+                    const areaDaPeca = valoresDimensoes.reduce((acumulador, valorAtual) => acumulador * valorAtual, 1) / divisor;
+                    return `${fmtN(areaDaPeca, 4)} m²`;
                   })()}
                 </div>
               )}

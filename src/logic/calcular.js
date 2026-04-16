@@ -12,58 +12,58 @@ import { catalogo } from "./catalogo.js";
  * @param {number} bdi   - BDI como fração (ex: 0.25 = 25%)
  */
 export function calcular(inp, over, bdi = BDI_PADRAO) {
-  const g = geometria(inp);
-  const cat = catalogo(g.modalidade, g.vedacao);
+  const dadosGeometricos = geometria(inp);
+  const etapasCatalogo = catalogo(dadosGeometricos.modalidade, dadosGeometricos.vedacao);
   const removidos = over.removidos || {};
   const precos    = over.precos    || {};
   const qtds      = over.qtds      || {};
   const custom    = over.custom    || {};
   const dimsOver  = over.dims      || {};
 
-  const etapas = cat.map(et => {
-    const matsCat = et.mats
-      .filter(m => m.obr || !removidos[`${et.id}.${m.k}`])
-      .map(m => {
-        const key = `${et.id}.${m.k}`;
+  const etapas = etapasCatalogo.map(etapa => {
+    const matsCat = etapa.mats
+      .filter(material => material.obr || !removidos[`${etapa.id}.${material.k}`])
+      .map(material => {
+        const key = `${etapa.id}.${material.k}`;
         // Mesclar dims: override do usuário sobre dims padrão do catálogo
-        const dims = m.dims ? { ...m.dims, ...(dimsOver[key] || {}) } : undefined;
-        const qtdCalc = m.dims ? m.qtd(g, dims) : m.qtd(g);
+        const dims = material.dims ? { ...material.dims, ...(dimsOver[key] || {}) } : undefined;
+        const qtdCalc = material.dims ? material.qtd(dadosGeometricos, dims) : material.qtd(dadosGeometricos);
         const qtd = qtds[key] !== undefined ? num(qtds[key]) : qtdCalc;
         // Preço unitário: usa override do usuário, ou preço base do catálogo (sem multiplicador)
-        const punit = precos[key] !== undefined ? num(precos[key]) : m.base;
+        const punit = precos[key] !== undefined ? num(precos[key]) : material.base;
         return {
-          key, nome: m.nome, un: m.un, qtd, punit,
+          key, nome: material.nome, un: material.un, qtd, punit,
           subtotal: qtd * punit,
           auto: qtds[key] === undefined,
           custom: false,
-          obr: !!m.obr,
+          obr: !!material.obr,
           dims: dims,
-          dimsDefault: m.dims
+          dimsDefault: material.dims
         };
       });
-    const matsCustom = (custom[et.id] || []).map(c => ({
-      key: c.key, nome: c.nome, un: c.un,
-      qtd: num(c.qtd), punit: num(c.punit),
-      subtotal: num(c.qtd) * num(c.punit),
+    const matsCustom = (custom[etapa.id] || []).map(materialCustom => ({
+      key: materialCustom.key, nome: materialCustom.nome, un: materialCustom.un,
+      qtd: num(materialCustom.qtd), punit: num(materialCustom.punit),
+      subtotal: num(materialCustom.qtd) * num(materialCustom.punit),
       auto: false, custom: true
     }));
     const mats = [...matsCat, ...matsCustom];
-    const valor = mats.reduce((s, m) => s + m.subtotal, 0);
-    return { id: et.id, nome: et.nome, mats, valor };
+    const valor = mats.reduce((soma, material) => soma + material.subtotal, 0);
+    return { id: etapa.id, nome: etapa.nome, mats, valor };
   });
 
   // Custo direto = soma bottom-up de todas as etapas
-  const custoDireto  = etapas.reduce((s, e) => s + e.valor, 0);
+  const custoDireto  = etapas.reduce((soma, etapaAtual) => soma + etapaAtual.valor, 0);
   const bdiPercent   = Math.max(0, num(bdi));
   const bdiValor     = custoDireto * bdiPercent;
   const custoTotal   = custoDireto + bdiValor;
 
-  const custoM2       = g.areaTotal > 0 ? custoTotal / g.areaTotal : 0;
-  const custoM2Direto = g.areaTotal > 0 ? custoDireto / g.areaTotal : 0;
-  const custoApto     = g.totalAptos > 0 ? custoTotal / g.totalAptos : 0;
+  const custoM2       = dadosGeometricos.areaTotal > 0 ? custoTotal / dadosGeometricos.areaTotal : 0;
+  const custoM2Direto = dadosGeometricos.areaTotal > 0 ? custoDireto / dadosGeometricos.areaTotal : 0;
+  const custoApto     = dadosGeometricos.totalAptos > 0 ? custoTotal / dadosGeometricos.totalAptos : 0;
 
   return {
-    ...g, etapas,
+    ...dadosGeometricos, etapas,
     custoDireto, bdiPercent, bdiValor,
     custoTotal, custoM2, custoM2Direto, custoApto
   };

@@ -2,9 +2,9 @@ export const fmtBRL = (v) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })
     .format(isFinite(v) ? v : 0);
 
-export const fmtN = (v, d = 2) =>
+export const fmtN = (v, casasDecimais = 2) =>
   new Intl.NumberFormat("pt-BR", {
-    minimumFractionDigits: d, maximumFractionDigits: d
+    minimumFractionDigits: casasDecimais, maximumFractionDigits: casasDecimais
   }).format(isFinite(v) ? v : 0);
 
 // Converte string (com vírgula ou ponto) ou número em número

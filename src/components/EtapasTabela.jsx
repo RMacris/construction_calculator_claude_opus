@@ -12,41 +12,41 @@ const cellInp = {
 };
 const cellInpL = { ...cellInp, textAlign: "left" };
 
-function MaterialRow({ m, ed, e, over, setOver, customList, onOpenModal }) {
-  const idxCustom = m.custom ? customList.findIndex(c => c.key === m.key) : -1;
+function MaterialRow({ material, modoEdicao, etapa, over, setOver, customList, onOpenModal }) {
+  const indiceCustomizado = material.custom ? customList.findIndex(itemCustomizado => itemCustomizado.key === material.key) : -1;
 
-  const setPreco = (key, v) => setOver({ ...over, precos: { ...(over.precos || {}), [key]: v } });
-  const setQtd   = (key, v) => setOver({ ...over, qtds:   { ...(over.qtds   || {}), [key]: v } });
+  const setPreco = (key, novoValor) => setOver({ ...over, precos: { ...(over.precos || {}), [key]: novoValor } });
+  const setQtd   = (key, novoValor) => setOver({ ...over, qtds:   { ...(over.qtds   || {}), [key]: novoValor } });
   const remover  = (key)    => setOver({ ...over, removidos: { ...(over.removidos || {}), [key]: true } });
-  const setCustomField = (etapaId, idx, field, v) => {
+  const setCustomField = (etapaId, indice, field, novoValor) => {
     const custom = { ...(over.custom || {}) };
-    const arr = [...(custom[etapaId] || [])];
-    arr[idx] = { ...arr[idx], [field]: v };
-    custom[etapaId] = arr;
+    const listaItens = [...(custom[etapaId] || [])];
+    listaItens[indice] = { ...listaItens[indice], [field]: novoValor };
+    custom[etapaId] = listaItens;
     setOver({ ...over, custom });
   };
-  const removerCustom = (etapaId, idx) => {
+  const removerCustom = (etapaId, indice) => {
     const custom = { ...(over.custom || {}) };
-    const arr = [...(custom[etapaId] || [])];
-    arr.splice(idx, 1);
-    custom[etapaId] = arr;
+    const listaItens = [...(custom[etapaId] || [])];
+    listaItens.splice(indice, 1);
+    custom[etapaId] = listaItens;
     setOver({ ...over, custom });
   };
 
   return (
     <tr style={{ borderTop: "1px solid #e2e8f0" }}>
       <td style={{ padding: 4 }}>
-        {ed && m.custom ? (
-          <input type="text" value={customList[idxCustom]?.nome || ""}
-            onChange={ev => setCustomField(e.id, idxCustom, "nome", ev.target.value)}
+        {modoEdicao && material.custom ? (
+          <input type="text" value={customList[indiceCustomizado]?.nome || ""}
+            onChange={ev => setCustomField(etapa.id, indiceCustomizado, "nome", ev.target.value)}
             style={cellInpL} />
         ) : (
           <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            {m.obr && <span className="badge-obr" title="Obrigatório">●</span>}
-            {m.nome}
-            {m.custom && <span style={{ color: "#db2777", fontSize: 10 }}> ✚</span>}
-            {m.dims && ed && (
-              <button onClick={() => onOpenModal(m)} title="Editar dimensões"
+            {material.obr && <span className="badge-obr" title="Obrigatório">●</span>}
+            {material.nome}
+            {material.custom && <span style={{ color: "#db2777", fontSize: 10 }}> ✚</span>}
+            {material.dims && modoEdicao && (
+              <button onClick={() => onOpenModal(material)} title="Editar dimensões"
                 style={{ border: "none", background: "transparent", cursor: "pointer",
                          color: "#3b82f6", fontSize: 12, padding: 0, marginLeft: 2 }}>⚙</button>
             )}
@@ -54,48 +54,48 @@ function MaterialRow({ m, ed, e, over, setOver, customList, onOpenModal }) {
         )}
       </td>
       <td style={{ padding: 4, textAlign: "right" }}>
-        {ed ? (
+        {modoEdicao ? (
           <NumInput
             style={cellInp}
-            value={m.custom
-              ? customList[idxCustom]?.qtd
-              : ((over.qtds || {})[m.key] !== undefined
-                  ? (over.qtds || {})[m.key] : m.qtd)}
-            onChange={(v) => m.custom
-              ? setCustomField(e.id, idxCustom, "qtd", v)
-              : setQtd(m.key, v)}
+            value={material.custom
+              ? customList[indiceCustomizado]?.qtd
+              : ((over.qtds || {})[material.key] !== undefined
+                  ? (over.qtds || {})[material.key] : material.qtd)}
+            onChange={(novoValor) => material.custom
+              ? setCustomField(etapa.id, indiceCustomizado, "qtd", novoValor)
+              : setQtd(material.key, novoValor)}
           />
-        ) : fmtN(m.qtd, 0)}
+        ) : fmtN(material.qtd, 0)}
       </td>
       <td style={{ padding: 4 }}>
-        {ed && m.custom ? (
-          <input type="text" value={customList[idxCustom]?.un || ""}
-            onChange={ev => setCustomField(e.id, idxCustom, "un", ev.target.value)}
+        {modoEdicao && material.custom ? (
+          <input type="text" value={customList[indiceCustomizado]?.un || ""}
+            onChange={ev => setCustomField(etapa.id, indiceCustomizado, "un", ev.target.value)}
             style={cellInpL} />
-        ) : m.un}
+        ) : material.un}
       </td>
       <td style={{ padding: 4, textAlign: "right" }}>
-        {ed ? (
+        {modoEdicao ? (
           <NumInput
             style={cellInp}
-            value={m.custom
-              ? customList[idxCustom]?.punit
-              : ((over.precos || {})[m.key] !== undefined
-                  ? (over.precos || {})[m.key] : m.punit.toFixed(2))}
-            onChange={(v) => m.custom
-              ? setCustomField(e.id, idxCustom, "punit", v)
-              : setPreco(m.key, v)}
+            value={material.custom
+              ? customList[indiceCustomizado]?.punit
+              : ((over.precos || {})[material.key] !== undefined
+                  ? (over.precos || {})[material.key] : material.punit.toFixed(2))}
+            onChange={(novoValor) => material.custom
+              ? setCustomField(etapa.id, indiceCustomizado, "punit", novoValor)
+              : setPreco(material.key, novoValor)}
           />
-        ) : fmtBRL(m.punit)}
+        ) : fmtBRL(material.punit)}
       </td>
       <td style={{ padding: 4, textAlign: "right", fontWeight: 600 }}>
-        {fmtBRL(m.subtotal)}
+        {fmtBRL(material.subtotal)}
       </td>
-      {ed && (
+      {modoEdicao && (
         <td style={{ padding: 4, textAlign: "center" }}>
-          {!m.obr ? (
+          {!material.obr ? (
             <button
-              onClick={() => m.custom ? removerCustom(e.id, idxCustom) : remover(m.key)}
+              onClick={() => material.custom ? removerCustom(etapa.id, indiceCustomizado) : remover(material.key)}
               title="Remover"
               style={{ border: "none", background: "transparent",
                        color: "#dc2626", cursor: "pointer", fontSize: 14,
@@ -109,40 +109,40 @@ function MaterialRow({ m, ed, e, over, setOver, customList, onOpenModal }) {
   );
 }
 
-function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
+function EtapaRow({ etapa, indice, cor, over, setOver, maxPct, custoTotal }) {
   const [expanded, setExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [modalMat, setModalMat] = useState(null);
   const [confirmReset, setConfirmReset] = useState(false);
-  const pct = e.valor / (custoTotal || 1);
-  const customList = (over.custom || {})[e.id] || [];
+  const percentualCusto = etapa.valor / (custoTotal || 1);
+  const customList = (over.custom || {})[etapa.id] || [];
 
   // Reset all overrides for this etapa (precos, qtds, removidos, custom, dims)
   const resetEtapa = () => {
     const next = { ...over };
-    const prefix = `${e.id}.`;
+    const prefix = `${etapa.id}.`;
     if (next.precos) {
       next.precos = Object.fromEntries(
-        Object.entries(next.precos).filter(([k]) => !k.startsWith(prefix))
+        Object.entries(next.precos).filter(([chave]) => !chave.startsWith(prefix))
       );
     }
     if (next.qtds) {
       next.qtds = Object.fromEntries(
-        Object.entries(next.qtds).filter(([k]) => !k.startsWith(prefix))
+        Object.entries(next.qtds).filter(([chave]) => !chave.startsWith(prefix))
       );
     }
     if (next.removidos) {
       next.removidos = Object.fromEntries(
-        Object.entries(next.removidos).filter(([k]) => !k.startsWith(prefix))
+        Object.entries(next.removidos).filter(([chave]) => !chave.startsWith(prefix))
       );
     }
     if (next.dims) {
       next.dims = Object.fromEntries(
-        Object.entries(next.dims).filter(([k]) => !k.startsWith(prefix))
+        Object.entries(next.dims).filter(([chave]) => !chave.startsWith(prefix))
       );
     }
     if (next.custom) {
-      const { [e.id]: _removed, ...rest } = next.custom;
+      const { [etapa.id]: _removed, ...rest } = next.custom;
       next.custom = rest;
     }
     setOver(next);
@@ -152,12 +152,12 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
 
   const adicionarCustom = () => {
     const custom = { ...(over.custom || {}) };
-    const arr = [...(custom[e.id] || [])];
-    arr.push({
-      key: `custom_${e.id}_${Date.now()}`,
+    const listaItens = [...(custom[etapa.id] || [])];
+    listaItens.push({
+      key: `custom_${etapa.id}_${Date.now()}`,
       nome: "Novo item", un: "un", qtd: "1", punit: "0"
     });
-    custom[e.id] = arr;
+    custom[etapa.id] = listaItens;
     setOver({ ...over, custom });
   };
 
@@ -177,24 +177,24 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
 
   return (
     <div style={{ border: "1px solid #e2e8f0", borderRadius: 6, marginBottom: 6, background: "#fff" }}>
-      <div className="etapa-row-header" onClick={() => setExpanded(v => !v)}>
+      <div className="etapa-row-header" onClick={() => setExpanded(estadoAtual => !estadoAtual)}>
         <span style={{ width: 16, color: "#64748b" }}>{expanded ? "▾" : "▸"}</span>
-        <span style={{ flex: 1, fontWeight: 600, color: "#1e293b", minWidth: 120 }}>{e.nome}</span>
+        <span style={{ flex: 1, fontWeight: 600, color: "#1e293b", minWidth: 120 }}>{etapa.nome}</span>
         <span className="etapa-row-pct">
-          {fmtN(pct * 100, 1)}%
+          {fmtN(percentualCusto * 100, 1)}%
         </span>
         <div className="etapa-row-bar">
-          <div style={{ width: `${(pct / (maxPct || 1)) * 100}%`, height: "100%", background: CORES[i % CORES.length] }} />
+          <div style={{ width: `${(percentualCusto / (maxPct || 1)) * 100}%`, height: "100%", background: CORES[indice % CORES.length] }} />
         </div>
         <span className="etapa-row-valor" style={{ color: cor }}>
-          {fmtBRL(e.valor)}
+          {fmtBRL(etapa.valor)}
         </span>
       </div>
       {expanded && (
         <div className="etapa-expanded-content">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <span style={{ fontSize: 11, color: "#64748b" }}>
-              {e.mats.length} {e.mats.length === 1 ? "item" : "itens"}
+              {etapa.mats.length} {etapa.mats.length === 1 ? "item" : "itens"}
             </span>
             <div style={{ display: "flex", gap: 6 }}>
               <button
@@ -208,7 +208,7 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
                 ⟳ Reset
               </button>
               <button
-                onClick={(ev) => { ev.stopPropagation(); setEditMode(v => !v); }}
+                onClick={(ev) => { ev.stopPropagation(); setEditMode(estadoAtual => !estadoAtual); }}
                 style={{
                   padding: "4px 10px", fontSize: 11, border: "1px solid #cbd5e1",
                   borderRadius: 4, background: editMode ? "#fef3c7" : "#fff", cursor: "pointer"
@@ -230,8 +230,8 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
                 </tr>
               </thead>
               <tbody>
-                {e.mats.map((m) => (
-                  <MaterialRow key={m.key} m={m} ed={editMode} e={e}
+                {etapa.mats.map((material) => (
+                  <MaterialRow key={material.key} material={material} modoEdicao={editMode} etapa={etapa}
                                over={over} setOver={setOver} customList={customList}
                                onOpenModal={setModalMat} />
                 ))}
@@ -252,7 +252,7 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
           )}
           {confirmReset && (
             <ConfirmModal
-              title={`Resetar etapa "${e.nome}"?`}
+              title={`Resetar etapa "${etapa.nome}"?`}
               message="Todos os preços, quantidades, itens removidos e materiais adicionados nesta etapa serão apagados e restaurados para os valores calculados automaticamente."
               onConfirm={resetEtapa}
               onCancel={() => setConfirmReset(false)}
@@ -265,11 +265,11 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
 }
 
 export function EtapasTabela({ res, cor, over, setOver }) {
-  const maxPct = Math.max(...res.etapas.map(e => e.valor / (res.custoTotal || 1)));
+  const maxPct = Math.max(...res.etapas.map(etapa => etapa.valor / (res.custoTotal || 1)));
   return (
     <div style={{ marginTop: 10 }}>
-      {res.etapas.map((e, i) => (
-        <EtapaRow key={e.id} e={e} i={i} cor={cor} over={over} setOver={setOver}
+      {res.etapas.map((etapa, indice) => (
+        <EtapaRow key={etapa.id} etapa={etapa} indice={indice} cor={cor} over={over} setOver={setOver}
                   maxPct={maxPct} custoTotal={res.custoTotal} />
       ))}
     </div>

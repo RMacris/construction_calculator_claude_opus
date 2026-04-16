@@ -7,17 +7,17 @@ import { ConfirmModal } from "./ConfirmModal.jsx";
 
 export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }) {
   const [confirmReset, setConfirmReset] = useState(false);
-  const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
-  const setS = (k) => (e) => setInp({ ...inp, [k]: e.target.value });
-  const vedOk = Object.entries(VEDACOES).filter(([k]) =>
-    !(inp.modalidade === "steelframe" && k === "alvenaria"));
+  const setN = (nomeCampo) => (raw) => setInp({ ...inp, [nomeCampo]: raw });
+  const setS = (nomeCampo) => (evento) => setInp({ ...inp, [nomeCampo]: evento.target.value });
+  const vedacoesDisponiveis = Object.entries(VEDACOES).filter(([chaveVedacao]) =>
+    !(inp.modalidade === "steelframe" && chaveVedacao === "alvenaria"));
 
-  const r = resolverCampos(inp);
+  const camposResolvidos = resolverCampos(inp);
 
   const setCalculado = (novo) => {
     const mapa = { areaPavimento: "A_pav", areaApto: "A_apt", nApt: "n_apt", nPav: "n_pav" };
-    const prevKey = mapa[inp.calculado];
-    const valResolvido = r[prevKey];
+    const chaveCampoPrevio = mapa[inp.calculado];
+    const valResolvido = camposResolvidos[chaveCampoPrevio];
     setInp({
       ...inp,
       [inp.calculado]: String(valResolvido).replace(".", ","),
@@ -28,7 +28,7 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }
   const campoInter = (key, label, hint) => {
     const mapa = { areaPavimento: "A_pav", areaApto: "A_apt", nApt: "n_apt", nPav: "n_pav" };
     const ehCalc = inp.calculado === key;
-    const valExib = ehCalc ? r[mapa[key]] : inp[key];
+    const valExib = ehCalc ? camposResolvidos[mapa[key]] : inp[key];
     return (
       <Campo label={
         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -51,7 +51,7 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }
     );
   };
 
-  const bdiPct = (typeof bdi === "number" ? bdi : parseFloat(String(bdi).replace(",", ".")) || 0);
+  const bdiPercentual = (typeof bdi === "number" ? bdi : parseFloat(String(bdi).replace(",", ".")) || 0);
 
   return (
     <div className="panel-card" style={{
@@ -67,9 +67,9 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }
           Campo calculado automaticamente
         </div>
         <select style={inputStyle} value={inp.calculado}
-                onChange={e => setCalculado(e.target.value)}>
-          {Object.entries(CAMPOS_CALC).map(([k, v]) =>
-            <option key={k} value={k}>{v}</option>)}
+                onChange={evento => setCalculado(evento.target.value)}>
+          {Object.entries(CAMPOS_CALC).map(([nomeCampo, labelCampo]) =>
+            <option key={nomeCampo} value={nomeCampo}>{labelCampo}</option>)}
         </select>
         <div style={{ fontSize: 11, color: "#475569", marginTop: 4 }}>
           Os outros 3 campos são editáveis e propagam para este.
@@ -89,19 +89,19 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }
       </Campo>
       <Campo label="Modalidade construtiva">
         <select style={inputStyle} value={inp.modalidade}
-          onChange={(e) => {
-            const nova = e.target.value;
-            const ved = (nova === "steelframe" && inp.vedacao === "alvenaria")
+          onChange={(evento) => {
+            const novaModalidade = evento.target.value;
+            const vedacaoValidada = (novaModalidade === "steelframe" && inp.vedacao === "alvenaria")
               ? "drywall" : inp.vedacao;
-            setInp({ ...inp, modalidade: nova, vedacao: ved });
+            setInp({ ...inp, modalidade: novaModalidade, vedacao: vedacaoValidada });
           }}>
-          {Object.entries(MODALIDADES).map(([k, v]) =>
-            <option key={k} value={k}>{v.label}</option>)}
+          {Object.entries(MODALIDADES).map(([chaveModalidade, dadosModalidade]) =>
+            <option key={chaveModalidade} value={chaveModalidade}>{dadosModalidade.label}</option>)}
         </select>
       </Campo>
       <Campo label="Sistema de vedação interna">
         <select style={inputStyle} value={inp.vedacao} onChange={setS("vedacao")}>
-          {vedOk.map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+          {vedacoesDisponiveis.map(([chaveVedacao, dadosVedacao]) => <option key={chaveVedacao} value={chaveVedacao}>{dadosVedacao.label}</option>)}
         </select>
       </Campo>
 
@@ -110,26 +110,26 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <input
             type="range" min="0" max="50" step="1"
-            value={Math.round(bdiPct * 100)}
-            onChange={e => setBdi(parseInt(e.target.value, 10) / 100)}
+            value={Math.round(bdiPercentual * 100)}
+            onChange={evento => setBdi(parseInt(evento.target.value, 10) / 100)}
             style={{ flex: 1 }}
           />
           <span style={{
             minWidth: 48, textAlign: "center", fontWeight: 700,
             fontSize: 14, color: cor
-          }}>{Math.round(bdiPct * 100)}%</span>
+          }}>{Math.round(bdiPercentual * 100)}%</span>
         </div>
         <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
-          {[15, 20, 25, 30, 35].map(v => (
-            <button key={v}
-              onClick={() => setBdi(v / 100)}
+          {[15, 20, 25, 30, 35].map(valorBdi => (
+            <button key={valorBdi}
+              onClick={() => setBdi(valorBdi / 100)}
               style={{
                 padding: "2px 8px", fontSize: 11, borderRadius: 4, cursor: "pointer",
-                border: Math.round(bdiPct * 100) === v ? `2px solid ${cor}` : "1px solid #cbd5e1",
-                background: Math.round(bdiPct * 100) === v ? "#eff6ff" : "#fff",
-                fontWeight: Math.round(bdiPct * 100) === v ? 700 : 400
+                border: Math.round(bdiPercentual * 100) === valorBdi ? `2px solid ${cor}` : "1px solid #cbd5e1",
+                background: Math.round(bdiPercentual * 100) === valorBdi ? "#eff6ff" : "#fff",
+                fontWeight: Math.round(bdiPercentual * 100) === valorBdi ? 700 : 400
               }}>
-              {v}%
+              {valorBdi}%
             </button>
           ))}
         </div>
