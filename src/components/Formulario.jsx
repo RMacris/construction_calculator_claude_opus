@@ -5,7 +5,9 @@ import { NumInput, inputStyle } from "./NumInput.jsx";
 import { Campo } from "./Campo.jsx";
 import { ConfirmModal } from "./ConfirmModal.jsx";
 
-export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetPrecos, onResetInp }) {  const [confirmReset, setConfirmReset] = useState(false);  const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
+export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetInp }) {
+  const [confirmReset, setConfirmReset] = useState(false);
+  const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
   const setS = (k) => (e) => setInp({ ...inp, [k]: e.target.value });
   const vedOk = Object.entries(VEDACOES).filter(([k]) =>
     !(inp.modalidade === "steelframe" && k === "alvenaria"));
@@ -133,11 +135,7 @@ export function Formulario({ titulo, cor, inp, setInp, bdi, setBdi, onResetPreco
         </div>
       </Campo>
 
-      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-        <button onClick={onResetPrecos} style={{
-          padding: "6px 12px", border: "1px solid #cbd5e1", borderRadius: 6,
-          background: "#f8fafc", fontSize: 12, cursor: "pointer", width: "100%"
-        }}>Resetar preços para base do catálogo</button>
+      <div style={{ marginTop: 8 }}>
         <button onClick={() => setConfirmReset(true)} style={{
           padding: "6px 12px", border: "1px solid #fca5a5", borderRadius: 6,
           background: "#fef2f2", color: "#b91c1c", fontSize: 12,

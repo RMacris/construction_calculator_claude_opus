@@ -64,12 +64,10 @@ export default function SimuladorConstrucao() {
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
           <Formulario titulo="Cenário A" cor="#2563eb" inp={inpA} setInp={setInpA}
                       bdi={bdiA} setBdi={setBdiA}
-                      onResetPrecos={() => setOverA({})}
                       onResetInp={() => { setInpA(defaultInp); setOverA({}); setBdiA(BDI_PADRAO); }} />
           {comparar &&
             <Formulario titulo="Cenário B" cor="#db2777" inp={inpB} setInp={setInpB}
                         bdi={bdiB} setBdi={setBdiB}
-                        onResetPrecos={() => setOverB({})}
                         onResetInp={() => { setInpB(defaultInpB); setOverB({}); setBdiB(BDI_PADRAO); }} />}
         </div>
 
