@@ -23,18 +23,18 @@ const REFS = {
 
   // ── Preliminares ──────────────────────────────────────────────────────
   preliminares: {
-    tapume:     { preco: 68,   altura: 2.2 },
-    locacao:    { preco: 4200, areaPorVerba: 500 },
-    barracao:   { preco: 720,  fracao: 0.04 },
-    provis:     { preco: 6500 },
+    tapume:     { preco: 55,   altura: 2.2 },
+    locacao:    { preco: 3200, areaPorVerba: 500 },
+    barracao:   { preco: 520,  fracao: 0.04 },
+    provis:     { preco: 4800 },
   },
 
   // ── Fundação — Alvenaria Estrutural ───────────────────────────────────
   fundacao_alv_estrutural: {
-    radier_ae:  { preco: 320, espessura: 0.12 },
-    tela_ae:    { preco: 32,  sobreposicao: 1.05 },
-    imperm_ae:  { preco: 38 },
-    lastro_ae:  { preco: 35 },
+    radier_ae:  { preco: 280, espessura: 0.12 },
+    tela_ae:    { preco: 28,  sobreposicao: 1.05 },
+    imperm_ae:  { preco: 30 },
+    lastro_ae:  { preco: 28 },
   },
 
   // ── Fundação — Steel Frame ────────────────────────────────────────────
@@ -63,12 +63,12 @@ const REFS = {
 
   // ── Estrutura — Alvenaria Estrutural ──────────────────────────────────
   estrutura_alv_estrutural: {
-    bloco_estr: { preco: 3.50, dims: { altura: 19, comprimento: 39, un: "cm" } },
-    graute:     { preco: 1.80, porM2: 2 },
-    aco_ae:     { preco: 10,   porM2: 4 },
-    argam_ae:   { preco: 1.3 },                // usa comum.argamassaPorM2
-    laje_pre:   { preco: 95,   sobreposicao: 1.05 },
-    vergas_ae:  { preco: 12 },                  // usa comum.vergasFracao
+    bloco_estr: { preco: 2.80, dims: { altura: 19, comprimento: 39, un: "cm" } },
+    graute:     { preco: 1.40, porM2: 2 },
+    aco_ae:     { preco: 8.5,  porM2: 4 },
+    argam_ae:   { preco: 1.0 },                // usa comum.argamassaPorM2
+    laje_pre:   { preco: 72,   sobreposicao: 1.05 },
+    vergas_ae:  { preco: 9 },                   // usa comum.vergasFracao
   },
 
   // ── Estrutura — Steel Frame ───────────────────────────────────────────
@@ -97,10 +97,10 @@ const REFS = {
 
   // ── Vedação — Alvenaria ───────────────────────────────────────────────
   vedacao_alvenaria: {
-    bloco:     { preco: 2.8,  dims: { altura: 19, comprimento: 29, un: "cm" } },
-    argamassa: { preco: 1.3 },                   // usa comum.argamassaPorM2
-    reboco:    { preco: 52,   faces: 2 },
-    vergas:    { preco: 45 },                     // usa comum.vergasFracao
+    bloco:     { preco: 2.0,  dims: { altura: 19, comprimento: 29, un: "cm" } },
+    argamassa: { preco: 1.0 },                   // usa comum.argamassaPorM2
+    reboco:    { preco: 33,   faces: 2 },
+    vergas:    { preco: 32 },                     // usa comum.vergasFracao
   },
 
   // ── Vedação — Drywall ─────────────────────────────────────────────────
@@ -129,60 +129,60 @@ const REFS = {
 
   // ── Cobertura ─────────────────────────────────────────────────────────
   cobertura: {
-    manta:  { preco: 62,  sobreposicao: 1.1 },
-    telha:  { preco: 78,  coberturaUtil: 0.85, inclinacao: 1.15,
+    manta:  { preco: 45,  sobreposicao: 1.1 },
+    telha:  { preco: 35,  coberturaUtil: 0.85, inclinacao: 1.15,
               dims: { largura: 33, comprimento: 42, un: "cm" } },
-    calha:  { preco: 98,  fatorPerimetro: 1.2 },
-    isolam: { preco: 42 },
+    calha:  { preco: 65,  fatorPerimetro: 1.2 },
+    isolam: { preco: 28 },
   },
 
   // ── Esquadrias ────────────────────────────────────────────────────────
   esquadrias: {
-    porta_ent: { preco: 1450 },
-    porta_int: { preco: 580,  porApto: 3 },
-    janela:    { preco: 780,  areaPorApto: 9, dims: { largura: 1.2, altura: 1.0, un: "m" } },
-    ferragem:  { preco: 220,  porApto: 4 },
+    porta_ent: { preco: 850 },
+    porta_int: { preco: 350,  porApto: 3 },
+    janela:    { preco: 420,  areaPorApto: 9, dims: { largura: 1.2, altura: 1.0, un: "m" } },
+    ferragem:  { preco: 120,  porApto: 4 },
   },
 
   // ── Revestimentos ─────────────────────────────────────────────────────
   revestimentos: {
-    porcelanato: { preco: 88, perda: 1.05, dims: { largura: 60, comprimento: 60, un: "cm" } },
-    azulejo:     { preco: 75, perda: 1.1,  dims: { largura: 30, comprimento: 60, un: "cm" } },
-    arg_cola:    { preco: 2.2, porM2: 5 },
-    rodape:      { preco: 32 },
+    porcelanato: { preco: 42, perda: 1.05, dims: { largura: 60, comprimento: 60, un: "cm" } },
+    azulejo:     { preco: 35, perda: 1.1,  dims: { largura: 30, comprimento: 60, un: "cm" } },
+    arg_cola:    { preco: 1.8, porM2: 5 },
+    rodape:      { preco: 18 },
   },
 
   // ── Hidráulica ────────────────────────────────────────────────────────
   hidraulica: {
-    tubos:     { preco: 2600 },
-    loucas:    { preco: 1650 },
-    metais:    { preco: 1250 },
-    registros: { preco: 520 },
-    cx_agua:   { preco: 10000, expoente: 0.65, divisor: 4 },
+    tubos:     { preco: 1800 },
+    loucas:    { preco: 850 },
+    metais:    { preco: 650 },
+    registros: { preco: 350 },
+    cx_agua:   { preco: 7500, expoente: 0.65, divisor: 4 },
   },
 
   // ── Elétrica ──────────────────────────────────────────────────────────
   eletrica: {
-    qdc:     { preco: 420 },
-    fios:    { preco: 5.2,  porM2: 12 },
-    eletrod: { preco: 7.2,  porM2: 4 },
-    tomada:  { preco: 32,   porApto: 18 },
-    disj:    { preco: 52,   porApto: 8 },
+    qdc:     { preco: 320 },
+    fios:    { preco: 4.0,  porM2: 12 },
+    eletrod: { preco: 5.5,  porM2: 4 },
+    tomada:  { preco: 22,   porApto: 18 },
+    disj:    { preco: 38,   porApto: 8 },
   },
 
   // ── Pintura ───────────────────────────────────────────────────────────
   pintura: {
-    massa:   { preco: 9,   porM2Face: 0.8 },
-    tinta:   { preco: 45,  porM2Face: 0.12 },
-    selador: { preco: 34,  porM2Face: 0.06 },
-    mo_pint: { preco: 22 },
+    massa:   { preco: 6.5, porM2Face: 0.8 },
+    tinta:   { preco: 30,  porM2Face: 0.12 },
+    selador: { preco: 24,  porM2Face: 0.06 },
+    mo_pint: { preco: 15 },
   },
 
   // ── Limpeza ───────────────────────────────────────────────────────────
   limpeza: {
-    cacamba:   { preco: 420, porM2: 0.02 },
-    limp_obra: { preco: 14 },
-    polimento: { preco: 26,  fracao: 0.3 },
+    cacamba:   { preco: 350, porM2: 0.02 },
+    limp_obra: { preco: 10 },
+    polimento: { preco: 18,  fracao: 0.3 },
   },
 };
 
