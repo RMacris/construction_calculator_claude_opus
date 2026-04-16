@@ -7,8 +7,7 @@ export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, onRese
   const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
   const setS = (k) => (e) => setInp({ ...inp, [k]: e.target.value });
   const vedOk = Object.entries(VEDACOES).filter(([k]) =>
-    !(inp.modalidade === "steelframe" && k === "alvenaria") &&
-    !(inp.modalidade === "alv_estrutural" && k === "alvenaria"));
+    !(inp.modalidade === "steelframe" && k === "alvenaria"));
 
   const r = resolverCampos(inp);
 
@@ -88,7 +87,7 @@ export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, onRese
         <select style={inputStyle} value={inp.modalidade}
           onChange={(e) => {
             const nova = e.target.value;
-            const ved = ((nova === "steelframe" || nova === "alv_estrutural") && inp.vedacao === "alvenaria")
+            const ved = (nova === "steelframe" && inp.vedacao === "alvenaria")
               ? "drywall" : inp.vedacao;
             setInp({ ...inp, modalidade: nova, vedacao: ved });
           }}>

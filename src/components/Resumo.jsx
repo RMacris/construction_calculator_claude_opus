@@ -7,7 +7,7 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
   const alertas = [];
   if (!res.aptoValido)
     alertas.push("Área do apto incompatível: banheiro + quarto (8m²) + sala (6m² mín) não cabem.");
-  if ((inp.modalidade === "steelframe" || inp.modalidade === "alv_estrutural") && inp.vedacao === "alvenaria")
+  if (inp.modalidade === "steelframe" && inp.vedacao === "alvenaria")
     alertas.push("Vedação de alvenaria não é compatível com esta modalidade construtiva.");
   if (res.totalAptos === 0)
     alertas.push("Nenhum apto cabe no pavimento — reduza área do apto ou aumente área do pavimento.");
