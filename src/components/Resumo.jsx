@@ -38,7 +38,7 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
         <Metric label="Custo/apto"             valor={fmtBRL(res.custoApto)} />
       </div>
       <div style={{ marginTop: 8, fontSize: 12, color: "#64748b" }}>
-        {MODALIDADES[inp.modalidade].descr} · Desperdício {fmtN(MODALIDADES[inp.modalidade].desperdicio * 100, 0)}% · Preset: {PRESETS[preset].label}
+        {MODALIDADES[inp.modalidade].descr} · Desperdício {fmtN(MODALIDADES[inp.modalidade].desperdicio * 100, 0)}% · Preset: {preset === "custom" ? "Personalizado" : PRESETS[preset]?.label}
       </div>
       <EtapasTabela res={res} cor={cor} over={over} setOver={setOver} />
     </div>

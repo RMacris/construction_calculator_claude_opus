@@ -3,14 +3,33 @@ import { num } from "../utils.js";
 import { geometria } from "./geometria.js";
 import { catalogo } from "./catalogo.js";
 
-export function calcular(inp, over, preset) {
+export function calcular(inp, over, preset, customM2 = 0) {
   const g = geometria(inp);
   const cat = catalogo(g.modalidade, g.vedacao);
-  const mult = PRESETS[preset].mult;
   const removidos = over.removidos || {};
   const precos    = over.precos    || {};
   const qtds      = over.qtds      || {};
   const custom    = over.custom    || {};
+
+  let mult;
+  if (preset === "custom" && customM2 > 0 && g.areaTotal > 0) {
+    // Derive multiplier so that non-overridden materials produce the desired cost/m²
+    // Use the same quantity resolution as the main loop for precision
+    let refTotal = 0;
+    cat.forEach(et => {
+      et.mats
+        .filter(m => !removidos[`${et.id}.${m.k}`] && precos[`${et.id}.${m.k}`] === undefined)
+        .forEach(m => {
+          const key = `${et.id}.${m.k}`;
+          const qtd = qtds[key] !== undefined ? num(qtds[key]) : m.qtd(g);
+          refTotal += m.base * qtd;
+        });
+    });
+    const refM2 = refTotal / g.areaTotal;
+    mult = refM2 > 0 ? customM2 / refM2 : 1;
+  } else {
+    mult = PRESETS[preset]?.mult ?? 1;
+  }
 
   const etapas = cat.map(et => {
     const matsCat = et.mats

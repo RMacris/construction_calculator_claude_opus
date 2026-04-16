@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { defaultInp, defaultInpB } from "./src/constants.js";
-import { fmtBRL, fmtN } from "./src/utils.js";
+import { fmtBRL, fmtN, num } from "./src/utils.js";
 import { calcular } from "./src/logic/calcular.js";
 import { Formulario } from "./src/components/Formulario.jsx";
 import { Resumo } from "./src/components/Resumo.jsx";
@@ -13,12 +13,14 @@ export default function SimuladorConstrucao() {
   const [inpB, setInpB] = useState(defaultInpB);
   const [presetA, setPresetA] = useState("ultraEcon");
   const [presetB, setPresetB] = useState("popular");
+  const [customM2A, setCustomM2A] = useState("");
+  const [customM2B, setCustomM2B] = useState("");
   const [overA, setOverA] = useState({});
   const [overB, setOverB] = useState({});
   const [comparar, setComparar] = useState(false);
 
-  const resA = useMemo(() => calcular(inpA, overA, presetA), [inpA, overA, presetA]);
-  const resB = useMemo(() => calcular(inpB, overB, presetB), [inpB, overB, presetB]);
+  const resA = useMemo(() => calcular(inpA, overA, presetA, num(customM2A)), [inpA, overA, presetA, customM2A]);
+  const resB = useMemo(() => calcular(inpB, overB, presetB, num(customM2B)), [inpB, overB, presetB, customM2B]);
 
   return (
     <div style={{
@@ -42,10 +44,12 @@ export default function SimuladorConstrucao() {
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
           <Formulario titulo="Cenário A" cor="#2563eb" inp={inpA} setInp={setInpA}
                       preset={presetA} setPreset={setPresetA}
+                      customM2={customM2A} setCustomM2={setCustomM2A}
                       onResetPrecos={() => setOverA({})} />
           {comparar &&
             <Formulario titulo="Cenário B" cor="#db2777" inp={inpB} setInp={setInpB}
                         preset={presetB} setPreset={setPresetB}
+                        customM2={customM2B} setCustomM2={setCustomM2B}
                         onResetPrecos={() => setOverB({})} />}
         </div>
 

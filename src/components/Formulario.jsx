@@ -3,7 +3,7 @@ import { resolverCampos } from "../logic/geometria.js";
 import { NumInput, inputStyle } from "./NumInput.jsx";
 import { Campo } from "./Campo.jsx";
 
-export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, onResetPrecos }) {
+export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, customM2, setCustomM2, onResetPrecos }) {
   const setN = (k) => (raw) => setInp({ ...inp, [k]: raw });
   const setS = (k) => (e) => setInp({ ...inp, [k]: e.target.value });
   const vedOk = Object.entries(VEDACOES).filter(([k]) =>
@@ -106,12 +106,26 @@ export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, onRese
           <select style={inputStyle} value={preset} onChange={e => setPreset(e.target.value)}>
             {Object.entries(PRESETS).map(([k, v]) =>
               <option key={k} value={k}>{v.label}</option>)}
+            <option value="custom">Personalizado…</option>
           </select>
           <button onClick={onResetPrecos} style={{
             padding: "6px 10px", border: "1px solid #cbd5e1", borderRadius: 6,
             background: "#f8fafc", fontSize: 12, cursor: "pointer", whiteSpace: "nowrap"
           }}>Resetar</button>
         </div>
+        {preset === "custom" && (
+          <div style={{ marginTop: 6 }}>
+            <NumInput
+              value={customM2}
+              onChange={setCustomM2}
+              placeholder="Ex: 3500"
+              style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }}
+            />
+            <div style={{ fontSize: 11, color: "#475569", marginTop: 3 }}>
+              Preço por m² desejado (R$) — substitui o preset de qualidade
+            </div>
+          </div>
+        )}
       </Campo>
     </div>
   );
