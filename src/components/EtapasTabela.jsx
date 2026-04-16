@@ -264,14 +264,74 @@ function EtapaRow({ etapa, indice, cor, over, setOver, maxPct, custoTotal }) {
   );
 }
 
+const GRUPOS_SIMULTANEOS = [
+  { ids: ["vedacao", "cobertura"],        titulo: "Vedação e Cobertura",     icone: "🧱", corDestaque: "#0ea5e9", fundo: "#f0f9ff" }, // sky-500, sky-50
+  { ids: ["esquadrias", "revestimentos"], titulo: "Esquadrias e Acabamento", icone: "🪟", corDestaque: "#10b981", fundo: "#f0fdf4" }, // emerald-500, emerald-50
+  { ids: ["hidraulica", "eletrica"],      titulo: "Instalações Embutidas",   icone: "⚡", corDestaque: "#8b5cf6", fundo: "#f5f3ff" }  // violet-500, violet-50
+];
+
+function agruparEtapas(etapas) {
+  const lista = [];
+  const jaAgrupados = new Set();
+
+  for (const etapa of etapas) {
+    if (jaAgrupados.has(etapa.id)) continue;
+    
+    const grupo = GRUPOS_SIMULTANEOS.find(g => g.ids.includes(etapa.id));
+    if (grupo) {
+      const etapasDoGrupo = etapas.filter(e => grupo.ids.includes(e.id));
+      etapasDoGrupo.forEach(e => jaAgrupados.add(e.id));
+      lista.push({ tipo: "grupo", ...grupo, etapas: etapasDoGrupo });
+    } else {
+      lista.push({ tipo: "simples", etapa });
+    }
+  }
+  return lista;
+}
+
 export function EtapasTabela({ res, cor, over, setOver }) {
   const maxPct = Math.max(...res.etapas.map(etapa => etapa.valor / (res.custoTotal || 1)));
+  const listaAgrupada = agruparEtapas(res.etapas);
+  
+  let idxLogico = 0;
+
   return (
     <div style={{ marginTop: 10 }}>
-      {res.etapas.map((etapa, indice) => (
-        <EtapaRow key={etapa.id} etapa={etapa} indice={indice} cor={cor} over={over} setOver={setOver}
-                  maxPct={maxPct} custoTotal={res.custoTotal} />
-      ))}
+      {listaAgrupada.map((item) => {
+        if (item.tipo === "grupo") {
+          const startIndex = idxLogico;
+          idxLogico += item.etapas.length;
+          return (
+            <div key={item.titulo} style={{
+              border: "1px solid #e2e8f0",
+              borderLeft: `4px solid ${item.corDestaque}`,
+              backgroundColor: item.fundo,
+              borderRadius: "6px",
+              padding: "10px 10px 4px 10px",
+              marginBottom: 8,
+              boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
+            }}>
+              <div style={{ 
+                fontSize: 11, fontWeight: 700, color: item.corDestaque, 
+                textTransform: "uppercase", letterSpacing: "0.5px", 
+                paddingLeft: 4, paddingBottom: 8, 
+                display: "flex", alignItems: "center", gap: 6 
+              }}>
+                <span style={{ fontSize: 13 }}>{item.icone}</span> 
+                <span>{item.titulo} <span style={{ opacity: 0.7, fontWeight: 500, textTransform: "none" }}>— Fases Simultâneas</span></span>
+              </div>
+              {item.etapas.map((etapa, i) => (
+                <EtapaRow key={etapa.id} etapa={etapa} indice={startIndex + i} cor={cor} over={over} setOver={setOver} maxPct={maxPct} custoTotal={res.custoTotal} />
+              ))}
+            </div>
+          );
+        }
+        
+        const iGlobal = idxLogico++;
+        return (
+          <EtapaRow key={item.etapa.id} etapa={item.etapa} indice={iGlobal} cor={cor} over={over} setOver={setOver} maxPct={maxPct} custoTotal={res.custoTotal} />
+        );
+      })}
     </div>
   );
 }
