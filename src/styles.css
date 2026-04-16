@@ -1,3 +1,122 @@
+/* src/styles.css */
+
+.grid-cols-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 800px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-cols-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+@media (max-width: 400px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.etapa-expanded-content {
+  padding: 6px 10px 10px 20px;
+  background: #f8fafc;
+}
+
+@media (max-width: 500px) {
+  .etapa-expanded-content {
+    padding: 6px 6px 10px 6px;
+  }
+  .table-responsive table {
+    font-size: 11px !important;
+  }
+  .table-responsive th, .table-responsive td {
+    padding: 4px 2px !important;
+  }
+}
+
+.etapa-row-header {
+  padding: 8px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.etapa-row-bar {
+  width: 100px;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.etapa-row-pct {
+  width: 70px;
+  text-align: right;
+  color: #475569;
+}
+
+.etapa-row-valor {
+  width: 130px;
+  text-align: right;
+  font-weight: 600;
+}
+
+@media (max-width: 500px) {
+  .etapa-row-bar {
+    display: none;
+  }
+  .etapa-row-pct {
+    width: auto;
+  }
+  .etapa-row-valor {
+    width: auto;
+    flex-grow: 1;
+    text-align: right;
+  }
+}
 .app-wrapper {
   padding: 16px;
 }
@@ -14,10 +133,12 @@
 
 @media (max-width: 600px) {
   .app-wrapper {
-    padding: 6px;
+    padding: 16px 4px;
   }
-  .panel-card, .panel-card-sm {
-    padding: 8px;
-    border-radius: 6px;
+  .panel-card {
+    padding: 14px 8px;
+  }
+  .panel-card-sm {
+    padding: 12px 8px;
   }
 }
