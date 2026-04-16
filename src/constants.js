@@ -52,10 +52,10 @@ export const CORES = [
 ];
 
 export const defaultInp = {
-  areaPavimento: "300", areaApto: "60", nApt: "10", nPav: "3",
+  areaPavimento: "250", areaApto: "42,5", nApt: "10", nPav: "2",
   areaBanheiro: "4", peDireito: "2,8",
   modalidade: "alv_estrutural", vedacao: "drywall",
-  calculado: "nPav"
+  calculado: "areaApto"
 };
 
 export const defaultInpB = {

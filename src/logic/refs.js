@@ -47,17 +47,17 @@ const REFS = {
 
   // ── Fundação — Metálica ───────────────────────────────────────────────
   fundacao_metalica: {
-    estaca_helice: { preco: 210, porM2: 0.9 },
-    conc_blocos:   { preco: 370, espessura: 0.12 },
-    aco_fund:      { preco: 10,  porM2: 35 },
+    estaca_helice: { preco: 210, porTonelada: 0.15 },
+    conc_blocos:   { preco: 370 },
+    aco_fund:      { preco: 10,  porVolume: 65 },
     formas_fund:   { preco: 98,  porM2: 0.8 },
   },
 
   // ── Fundação — Convencional ───────────────────────────────────────────
   fundacao_convencional: {
-    estaca_sap:  { preco: 420, volumePorM2: 0.20 },
-    aco_fund:    { preco: 10,  porM2: 55 },
-    formas_fund: { preco: 98,  porM2: 1.2 },
+    estaca_sap:  { preco: 420 },
+    aco_fund:    { preco: 10,  porVolume: 80 },
+    formas_fund: { preco: 98,  fatorArea: 5 },
     lastro:      { preco: 42 },
   },
 
@@ -81,17 +81,17 @@ const REFS = {
 
   // ── Estrutura — Metálica ──────────────────────────────────────────────
   estrutura_metalica: {
-    perfis_pes:  { preco: 22,  porM2: 45 },
+    perfis_pes:  { preco: 22,  porVolume: 2.2 }, // Aço em t por m³ de bloco fênix equivalente?
     steel_deck:  { preco: 145, cobertura: 0.95 },
     cap_conc:    { preco: 360, espessura: 0.10 },
-    solda_chumb: { preco: 88 },
+    solda_chumb: { preco: 88, porPilar: 8 },
   },
 
   // ── Estrutura — Convencional ──────────────────────────────────────────
   estrutura_convencional: {
-    conc_estr:   { preco: 390, porM2: 0.22 },
-    aco_estr:    { preco: 10,  porM2: 18 },
-    formas_estr: { preco: 98,  porM2: 2.4 },
+    conc_estr:   { preco: 390 },
+    aco_estr:    { preco: 10,  porVolume: 100 }, // kg/m³
+    formas_estr: { preco: 98,  fatorArea: 10 }, // m² de forma por m³
     escora:      { preco: 42,  porM2: 0.8 },
   },
 
@@ -108,7 +108,7 @@ const REFS = {
     gesso:      { preco: 38,  chapasPorFace: 2.05, dims: { largura: 1.2, altura: 2.4, un: "m" } },
     perfis_dry: { preco: 13,  porM2: 2.8 },
     massa_fita: { preco: 16,  faces: 2 },
-    la_vidro:   { preco: 30,  fracao: 0.4 },
+    la_vidro:   { preco: 30,  fracao: 1.0 },
   },
 
   // ── Vedação — Drywall Acústico ────────────────────────────────────────

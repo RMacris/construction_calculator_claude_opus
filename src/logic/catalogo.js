@@ -15,7 +15,7 @@ export function catalogo(modalidade, vedacao) {
   const pr = R.preliminares;
   const preliminares = { id: "preliminares", nome: "Serviços Preliminares", mats: [
     { k: "tapume",   nome: "Tapume de madeira h=2,2m", un: "m²", obr: true,
-      qtd: g => Math.ceil(c.perimetroLados * Math.sqrt(g.areaProjecao) * pr.tapume.altura), base: pr.tapume.preco },
+      qtd: g => Math.ceil(g.perimetroProjecao * pr.tapume.altura), base: pr.tapume.preco },
     { k: "locacao",  nome: "Locação + topografia", un: "vb",
       qtd: g => Math.max(1, Math.ceil(g.areaProjecao / pr.locacao.areaPorVerba * g.fatorDuracao)), base: pr.locacao.preco },
     { k: "barracao", nome: "Barracão de obra", un: "m²", obr: true,
@@ -27,38 +27,38 @@ export function catalogo(modalidade, vedacao) {
   const fundacao = { id: "fundacao", nome: `Fundação — ${MODALIDADES[modalidade].label}`,
     mats: modalidade === "alv_estrutural" ? (() => { const f = R.fundacao_alv_estrutural; return [
       { k: "radier_ae",    nome: "Radier / sapata corrida fck 20", un: "m³", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.radier_ae.espessura * w * g.fatorCarga), base: f.radier_ae.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * 0.8 * w), base: f.radier_ae.preco },
       { k: "tela_ae",      nome: "Tela soldada Q92",              un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.tela_ae.sobreposicao * g.fatorCarga), base: f.tela_ae.preco },
+        qtd: g => Math.ceil(g.areaProjecao * f.tela_ae.sobreposicao), base: f.tela_ae.preco },
       { k: "imperm_ae",    nome: "Impermeabilização + lona",      un: "m²", obr: true,
         qtd: g => Math.ceil(g.areaProjecao), base: f.imperm_ae.preco },
       { k: "lastro_ae",    nome: "Lastro brita + regularização",  un: "m²",
         qtd: g => Math.ceil(g.areaProjecao), base: f.lastro_ae.preco }
     ]; })() : modalidade === "steelframe" ? (() => { const f = R.fundacao_steelframe; return [
       { k: "radier_conc",  nome: "Concreto radier fck 25", un: "m³", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.radier_conc.espessura * w * g.fatorCarga), base: f.radier_conc.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * w), base: f.radier_conc.preco },
       { k: "tela_sold",    nome: "Tela soldada Q138",      un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.tela_sold.sobreposicao * g.fatorCarga), base: f.tela_sold.preco },
+        qtd: g => Math.ceil(g.areaProjecao * f.tela_sold.sobreposicao), base: f.tela_sold.preco },
       { k: "lona_brita",   nome: "Lona plástica + brita",   un: "m²",
         qtd: g => Math.ceil(g.areaProjecao), base: f.lona_brita.preco },
       { k: "imperm_rad",   nome: "Impermeabilização radier", un: "m²", obr: true,
         qtd: g => Math.ceil(g.areaProjecao), base: f.imperm_rad.preco }
     ]; })() : modalidade === "metalica" ? (() => { const f = R.fundacao_metalica; return [
       { k: "estaca_helice", nome: "Estaca hélice contínua", un: "m", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.estaca_helice.porM2 * g.fatorCarga), base: f.estaca_helice.preco },
+        qtd: g => Math.ceil(g.cargaTotalEdificio * f.estaca_helice.porTonelada), base: f.estaca_helice.preco },
       { k: "conc_blocos",   nome: "Concreto blocos/vigas fck 25", un: "m³", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.conc_blocos.espessura * w * g.fatorCarga), base: f.conc_blocos.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * 0.9 * w), base: f.conc_blocos.preco },
       { k: "aco_fund",      nome: "Aço CA-50 fundação",     un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.aco_fund.porM2 * w * g.fatorCarga), base: f.aco_fund.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * f.aco_fund.porVolume * w), base: f.aco_fund.preco },
       { k: "formas_fund",   nome: "Formas de madeira",      un: "m²",
-        qtd: g => Math.ceil(g.areaProjecao * f.formas_fund.porM2 * g.fatorCarga), base: f.formas_fund.preco }
+        qtd: g => Math.ceil(g.areaProjecao * f.formas_fund.porM2), base: f.formas_fund.preco }
     ]; })() : (() => { const f = R.fundacao_convencional; return [
       { k: "estaca_sap",    nome: "Estaca / sapata concreto fck 25", un: "m³", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.estaca_sap.volumePorM2 * w * g.fatorCarga), base: f.estaca_sap.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * w), base: f.estaca_sap.preco },
       { k: "aco_fund",      nome: "Aço CA-50 fundação",     un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.aco_fund.porM2 * w * g.fatorCarga), base: f.aco_fund.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * f.aco_fund.porVolume * w), base: f.aco_fund.preco },
       { k: "formas_fund",   nome: "Formas de madeira",      un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaProjecao * f.formas_fund.porM2 * g.fatorCarga), base: f.formas_fund.preco },
+        qtd: g => Math.ceil(g.volumeFundacao * f.formas_fund.fatorArea), base: f.formas_fund.preco },
       { k: "lastro",        nome: "Lastro brita + regularização", un: "m²",
         qtd: g => Math.ceil(g.areaProjecao), base: f.lastro.preco }
     ]; })() };
@@ -68,44 +68,44 @@ export function catalogo(modalidade, vedacao) {
       { k: "bloco_estr",   nome: "Bloco concreto estrutural 14×19×39", un: "un", obr: true,
         dims: { ...e.bloco_estr.dims },
         qtd: (g, d) => { const a = (d?.altura||e.bloco_estr.dims.altura)/100 * (d?.comprimento||e.bloco_estr.dims.comprimento)/100;
-          return Math.ceil(g.areaParedeTot / a * w * g.fatorAltura); }, base: e.bloco_estr.preco },
+          return Math.ceil(g.areaParedeTot / a * w); }, base: e.bloco_estr.preco },
       { k: "graute",       nome: "Graute fck 20 (canaletas/vertic.)", un: "L",
-        qtd: g => Math.ceil(g.areaParedeTot * e.graute.porM2 * g.fatorAltura), base: e.graute.preco },
+        qtd: g => Math.ceil(g.areaParedeTot * e.graute.porM2), base: e.graute.preco },
       { k: "aco_ae",       nome: "Aço CA-50/CA-60 (canaletas)",  un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaParedeTot * e.aco_ae.porM2 * w * g.fatorAltura), base: e.aco_ae.preco },
+        qtd: g => Math.ceil(g.areaParedeTot * e.aco_ae.porM2 * w), base: e.aco_ae.preco },
       { k: "argam_ae",     nome: "Argamassa assentamento",        un: "kg",
-        qtd: g => Math.ceil(g.areaParedeTot * c.argamassaPorM2 * g.fatorAltura), base: e.argam_ae.preco },
+        qtd: g => Math.ceil(g.areaParedeTot * c.argamassaPorM2), base: e.argam_ae.preco },
       { k: "laje_pre",     nome: "Laje pré-moldada treliçada + capa", un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.laje_pre.sobreposicao * g.fatorAltura), base: e.laje_pre.preco },
+        qtd: g => Math.ceil(g.areaTotal * e.laje_pre.sobreposicao), base: e.laje_pre.preco },
       { k: "vergas_ae",    nome: "Canaletas U (vergas/contravergas)", un: "m",
-        qtd: g => Math.ceil(g.perimetroApto * c.vergasFracao * g.totalAptos * g.fatorAltura), base: e.vergas_ae.preco }
+        qtd: g => Math.ceil(g.perimetroApto * c.vergasFracao * g.totalAptos), base: e.vergas_ae.preco }
     ]; })() : modalidade === "steelframe" ? (() => { const e = R.estrutura_steelframe; return [
       { k: "perfis_lsf",   nome: "Perfis aço galvanizado LSF", un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.perfis_lsf.porM2 * w * g.fatorAltura), base: e.perfis_lsf.preco },
+        qtd: g => Math.ceil(g.areaTotal * e.perfis_lsf.porM2 * w), base: e.perfis_lsf.preco },
       { k: "osb",          nome: "OSB estrutural 11,1mm",     un: "m²", obr: true,
-        qtd: g => Math.ceil((g.areaParedeTot * e.osb.sobrepParede + g.areaTotal * e.osb.fracaoLaje) * g.fatorAltura), base: e.osb.preco },
+        qtd: g => Math.ceil((g.areaParedeTot * e.osb.sobrepParede + g.areaTotal * e.osb.fracaoLaje)), base: e.osb.preco },
       { k: "paraf_lsf",    nome: "Parafusos autoperfurantes", un: "mi",
-        qtd: g => Math.ceil(g.areaTotal * e.paraf_lsf.porM2 * g.fatorAltura), base: e.paraf_lsf.preco },
+        qtd: g => Math.ceil(g.areaTotal * e.paraf_lsf.porM2), base: e.paraf_lsf.preco },
       { k: "membrana",     nome: "Membrana hidrófuga",        un: "m²",
-        qtd: g => Math.ceil(g.areaParedeApto * g.totalAptos * e.membrana.fracao * g.fatorAltura), base: e.membrana.preco }
+        qtd: g => Math.ceil(g.areaFachada * e.membrana.fracao), base: e.membrana.preco }
     ]; })() : modalidade === "metalica" ? (() => { const e = R.estrutura_metalica; return [
       { k: "perfis_pes",   nome: "Perfis estruturais I/H/W",  un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.perfis_pes.porM2 * w * g.fatorAltura), base: e.perfis_pes.preco },
+        qtd: g => Math.ceil((g.volumeConcretoEstrutura / 2.5) * 1000 * e.perfis_pes.porVolume * w), base: e.perfis_pes.preco }, // Peso do aço em estruturas puras baseadas no preditivo
       { k: "steel_deck",   nome: "Laje steel deck (painel)",  un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.steel_deck.cobertura * g.fatorAltura), base: e.steel_deck.preco },
+        qtd: g => Math.ceil(g.areaTotal * e.steel_deck.cobertura), base: e.steel_deck.preco },
       { k: "cap_conc",     nome: "Concreto capeamento fck 25", un: "m³",
-        qtd: g => Math.ceil(g.areaTotal * e.cap_conc.espessura * w * g.fatorAltura), base: e.cap_conc.preco },
+        qtd: g => Math.ceil(g.volumeLajes * w), base: e.cap_conc.preco },
       { k: "solda_chumb",  nome: "Solda/parafusos/chumbadores", un: "vb",
-        qtd: g => Math.ceil(g.areaTotal * g.fatorAltura), base: e.solda_chumb.preco }
+        qtd: g => Math.ceil(g.numPilares * g.pavimentos), base: e.solda_chumb.preco }
     ]; })() : (() => { const e = R.estrutura_convencional; return [
       { k: "conc_estr",    nome: "Concreto fck 30 (pilar/viga/laje)", un: "m³", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.conc_estr.porM2 * w * g.fatorAltura), base: e.conc_estr.preco },
-      { k: "aco_estr",     nome: "Aço CA-50 estrutura",       un: "kg", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.aco_estr.porM2 * w * g.fatorAltura), base: e.aco_estr.preco },
+        qtd: g => Math.ceil(g.volumeConcretoEstrutura * w), base: e.conc_estr.preco },
+      { k: "aco_estr",     nome: "Aço CA-50 estrutura (100kg/m³)",       un: "kg", obr: true,
+        qtd: g => Math.ceil(g.volumeConcretoEstrutura * e.aco_estr.porVolume * w), base: e.aco_estr.preco },
       { k: "formas_estr",  nome: "Formas de madeira compensada", un: "m²", obr: true,
-        qtd: g => Math.ceil(g.areaTotal * e.formas_estr.porM2 * g.fatorAltura), base: e.formas_estr.preco },
+        qtd: g => Math.ceil((g.volumePilares + g.volumeVigas) * e.formas_estr.fatorArea), base: e.formas_estr.preco },
       { k: "escora",       nome: "Escoramento metálico (loc.)", un: "m²",
-        qtd: g => Math.ceil(g.areaTotal * e.escora.porM2 * g.fatorAltura), base: e.escora.preco }
+        qtd: g => Math.ceil(g.areaTotal * e.escora.porM2), base: e.escora.preco }
     ]; })() };
 
   const ved = { id: "vedacao", nome: `Vedação interna — ${VEDACOES[vedacao].label}`,
@@ -164,7 +164,7 @@ export function catalogo(modalidade, vedacao) {
       qtd: (g, d) => { const a = (d?.largura||cb.telha.dims.largura)/100 * (d?.comprimento||cb.telha.dims.comprimento)/100 * cb.telha.coberturaUtil;
         return Math.ceil(g.areaProjecao * cb.telha.inclinacao / a); }, base: cb.telha.preco },
     { k: "calha",  nome: "Calhas e rufos",           un: "m",
-      qtd: g => Math.ceil(c.perimetroLados * Math.sqrt(g.areaProjecao) * cb.calha.fatorPerimetro), base: cb.calha.preco },
+      qtd: g => Math.ceil(g.perimetroProjecao * cb.calha.fatorPerimetro), base: cb.calha.preco },
     { k: "isolam", nome: "Isolamento térmico",       un: "m²",
       qtd: g => Math.ceil(g.areaProjecao), base: cb.isolam.preco }
   ]};
@@ -230,13 +230,13 @@ export function catalogo(modalidade, vedacao) {
   const pt = R.pintura;
   const pintura = { id: "pintura", nome: "Pintura", mats: [
     { k: "massa",   nome: "Massa corrida/acrílica",     un: "kg",
-      qtd: g => Math.ceil(g.areaParedeTot * c.pinturaFaces * pt.massa.porM2Face), base: pt.massa.preco },
+      qtd: g => Math.ceil(g.areaParedeTot * pt.massa.porM2Face * 2), base: pt.massa.preco }, // ambas as faces (2)
     { k: "tinta",   nome: "Tinta látex/acrílica",       un: "L", obr: true,
-      qtd: g => Math.ceil(g.areaParedeTot * c.pinturaFaces * pt.tinta.porM2Face), base: pt.tinta.preco },
+      qtd: g => Math.ceil(g.areaParedeTot * pt.tinta.porM2Face * 2), base: pt.tinta.preco },
     { k: "selador", nome: "Selador/fundo",              un: "L",
-      qtd: g => Math.ceil(g.areaParedeTot * c.pinturaFaces * pt.selador.porM2Face), base: pt.selador.preco },
+      qtd: g => Math.ceil(g.areaParedeTot * pt.selador.porM2Face * 2), base: pt.selador.preco },
     { k: "mo_pint", nome: "Mão de obra aplicação",      un: "m²",
-      qtd: g => Math.ceil(g.areaParedeTot * c.pinturaFaces), base: pt.mo_pint.preco }
+      qtd: g => Math.ceil(g.areaParedeTot * 2), base: pt.mo_pint.preco }
   ]};
 
   const lp = R.limpeza;
