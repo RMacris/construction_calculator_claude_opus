@@ -14,7 +14,7 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
 
   return (
     <div style={{
-      background: "#fff", border: `2px solid ${cor}`, borderRadius: 10, padding: 14, flex: 1
+      background: "#fff", border: `2px solid ${cor}`, borderRadius: 10, padding: 14, flex: 1, minWidth: 280
     }}>
       <h3 style={{ margin: "0 0 10px", color: cor, fontSize: 15 }}>{titulo}</h3>
       {alertas.map((a, i) => (
@@ -23,7 +23,7 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
           padding: 8, borderRadius: 6, fontSize: 12, marginBottom: 6
         }}>⚠ {a}</div>
       ))}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 13 }}>
+      <div className="metrics-grid">
         <Metric label="Custo total"            valor={fmtBRL(res.custoTotal)} destaque cor={cor} />
         <Metric label="Custo/m² realizado"     valor={fmtBRL(res.custoM2)} destaque cor="#16a34a" />
         <Metric label="Pavimentos"             valor={`${res.pavimentos}`} />
@@ -38,7 +38,7 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
         <Metric label="Custo/apto"             valor={fmtBRL(res.custoApto)} />
       </div>
       <div style={{ marginTop: 8, fontSize: 12, color: "#64748b" }}>
-        {MODALIDADES[inp.modalidade].descr} · Desperdício {fmtN(MODALIDADES[inp.modalidade].desperdicio * 100, 0)}% · Preset: {preset === "custom" ? "Personalizado" : PRESETS[preset]?.label}
+        {MODALIDADES[inp.modalidade].descr} · Desperdício {fmtN(MODALIDADES[inp.modalidade].desperdicio * 100, 0)}% · Preset: {preset === "custom" ? "Personalizado" : `${PRESETS[preset]?.label} — R$ ${PRESETS[preset]?.custoM2.toLocaleString("pt-BR")}/m²`}
       </div>
       <EtapasTabela res={res} cor={cor} over={over} setOver={setOver} />
     </div>

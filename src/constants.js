@@ -19,11 +19,11 @@ export const VEDACOES = {
 };
 
 export const PRESETS = {
-  ultraEcon: { label: "Ultraeconômico",  mult: 0.60 },
-  popular:   { label: "Popular",         mult: 1.00 },
-  medio:     { label: "Médio",           mult: 1.35 },
-  medioAlto: { label: "Médio-alto",      mult: 1.70 },
-  alto:      { label: "Alto",            mult: 2.10 }
+  ultraEcon: { label: "Ultraeconômico",  custoM2: 1000 },
+  popular:   { label: "Popular",         custoM2: 1500 },
+  medio:     { label: "Médio",           custoM2: 2000 },
+  medioAlto: { label: "Médio-alto",      custoM2: 2500 },
+  alto:      { label: "Alto",            custoM2: 3500 }
 };
 
 export const CAMPOS_CALC = {

@@ -75,11 +75,7 @@ export default function SimuladorConstrucao() {
                         onResetPrecos={() => setOverB({})} />}
         </div>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: comparar ? "1fr 1fr" : "1fr",
-          gap: 12, marginBottom: 16
-        }}>
+        <div className={comparar ? "grid-cols-2" : "grid-cols-1"} style={{ marginBottom: 16 }}>
           <PieChartPanel etapas={resA.etapas}
                          titulo="Distribuição por etapa — Cenário A"
                          cor="#2563eb" />
@@ -97,7 +93,7 @@ export default function SimuladorConstrucao() {
         {comparar && (
           <div style={{ marginTop: 16, background: "#fff", borderRadius: 10, padding: 14 }}>
             <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Diferença A → B</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, fontSize: 13 }}>
+            <div className="grid-cols-4">
               <Metric label="Δ Custo total"
                       valor={fmtBRL(resB.custoTotal - resA.custoTotal)}
                       hint={resA.custoTotal > 0

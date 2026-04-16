@@ -113,24 +113,21 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
 
   return (
     <div style={{ border: "1px solid #e2e8f0", borderRadius: 6, marginBottom: 6, background: "#fff" }}>
-      <div
-        onClick={() => setExpanded(v => !v)}
-        style={{ padding: "8px 10px", cursor: "pointer", display: "flex",
-                 alignItems: "center", gap: 10, fontSize: 13 }}>
+      <div className="etapa-row-header" onClick={() => setExpanded(v => !v)}>
         <span style={{ width: 16, color: "#64748b" }}>{expanded ? "▾" : "▸"}</span>
-        <span style={{ flex: 1, fontWeight: 600, color: "#1e293b" }}>{e.nome}</span>
-        <span style={{ width: 70, textAlign: "right", color: "#475569" }}>
+        <span style={{ flex: 1, fontWeight: 600, color: "#1e293b", minWidth: 120 }}>{e.nome}</span>
+        <span className="etapa-row-pct">
           {fmtN(pct * 100, 1)}%
         </span>
-        <div style={{ width: 100, height: 8, background: "#f1f5f9", borderRadius: 4, overflow: "hidden" }}>
+        <div className="etapa-row-bar">
           <div style={{ width: `${(pct / (maxPct || 1)) * 100}%`, height: "100%", background: CORES[i % CORES.length] }} />
         </div>
-        <span style={{ width: 130, textAlign: "right", fontWeight: 600, color: cor }}>
+        <span className="etapa-row-valor" style={{ color: cor }}>
           {fmtBRL(e.valor)}
         </span>
       </div>
       {expanded && (
-        <div style={{ padding: "6px 10px 10px 20px", background: "#f8fafc" }}>
+        <div className="etapa-expanded-content">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <span style={{ fontSize: 11, color: "#64748b" }}>
               {e.mats.length} {e.mats.length === 1 ? "item" : "itens"}
@@ -144,24 +141,26 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
               {editMode ? "✓ Pronto" : "✎ Editar itens"}
             </button>
           </div>
-          <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ color: "#64748b", textAlign: "left" }}>
-                <th style={{ padding: 4, width: "38%" }}>Material</th>
-                <th style={{ padding: 4, width: 80, textAlign: "right" }}>Qtd</th>
-                <th style={{ padding: 4, width: 60 }}>Un</th>
-                <th style={{ padding: 4, width: 110, textAlign: "right" }}>Preço unit.</th>
-                <th style={{ padding: 4, textAlign: "right" }}>Subtotal</th>
-                {editMode && <th style={{ width: 28 }}></th>}
-              </tr>
-            </thead>
-            <tbody>
-              {e.mats.map((m) => (
-                <MaterialRow key={m.key} m={m} ed={editMode} e={e}
-                             over={over} setOver={setOver} customList={customList} />
-              ))}
-            </tbody>
-          </table>
+          <div className="table-responsive">
+            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", minWidth: 340 }}>
+              <thead>
+                <tr style={{ color: "#64748b", textAlign: "left" }}>
+                  <th style={{ padding: 4, width: "38%" }}>Material</th>
+                  <th style={{ padding: 4, width: 80, textAlign: "right" }}>Qtd</th>
+                  <th style={{ padding: 4, width: 60 }}>Un</th>
+                  <th style={{ padding: 4, width: 110, textAlign: "right" }}>Preço unit.</th>
+                  <th style={{ padding: 4, textAlign: "right" }}>Subtotal</th>
+                  {editMode && <th style={{ width: 28 }}></th>}
+                </tr>
+              </thead>
+              <tbody>
+                {e.mats.map((m) => (
+                  <MaterialRow key={m.key} m={m} ed={editMode} e={e}
+                               over={over} setOver={setOver} customList={customList} />
+                ))}
+              </tbody>
+            </table>
+          </div>
           {editMode && (
             <div style={{ marginTop: 6 }}>
               <button onClick={adicionarCustom} style={{

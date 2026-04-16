@@ -11,25 +11,20 @@ export function calcular(inp, over, preset, customM2 = 0) {
   const qtds      = over.qtds      || {};
   const custom    = over.custom    || {};
 
-  let mult;
-  if (preset === "custom" && customM2 > 0 && g.areaTotal > 0) {
-    // Derive multiplier so that non-overridden materials produce the desired cost/m²
-    // Use the same quantity resolution as the main loop for precision
-    let refTotal = 0;
-    cat.forEach(et => {
-      et.mats
-        .filter(m => !removidos[`${et.id}.${m.k}`] && precos[`${et.id}.${m.k}`] === undefined)
-        .forEach(m => {
-          const key = `${et.id}.${m.k}`;
-          const qtd = qtds[key] !== undefined ? num(qtds[key]) : m.qtd(g);
-          refTotal += m.base * qtd;
-        });
-    });
-    const refM2 = refTotal / g.areaTotal;
-    mult = refM2 > 0 ? customM2 / refM2 : 1;
-  } else {
-    mult = PRESETS[preset]?.mult ?? 1;
-  }
+  const targetM2 = preset === "custom" ? customM2 : (PRESETS[preset]?.custoM2 ?? 2800);
+
+  let refTotal = 0;
+  cat.forEach(et => {
+    et.mats
+      .filter(m => !removidos[`${et.id}.${m.k}`] && precos[`${et.id}.${m.k}`] === undefined)
+      .forEach(m => {
+        const key = `${et.id}.${m.k}`;
+        const qtd = qtds[key] !== undefined ? num(qtds[key]) : m.qtd(g);
+        refTotal += m.base * qtd;
+      });
+  });
+  const refM2 = g.areaTotal > 0 ? refTotal / g.areaTotal : 0;
+  const mult = targetM2 > 0 && refM2 > 0 ? targetM2 / refM2 : 1;
 
   const etapas = cat.map(et => {
     const matsCat = et.mats

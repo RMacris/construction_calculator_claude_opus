@@ -105,7 +105,7 @@ export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, custom
         <div style={{ display: "flex", gap: 6 }}>
           <select style={inputStyle} value={preset} onChange={e => setPreset(e.target.value)}>
             {Object.entries(PRESETS).map(([k, v]) =>
-              <option key={k} value={k}>{v.label}</option>)}
+              <option key={k} value={k}>{v.label} — R$ {v.custoM2.toLocaleString("pt-BR")}/m²</option>)}
             <option value="custom">Personalizado…</option>
           </select>
           <button onClick={onResetPrecos} style={{
