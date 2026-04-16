@@ -90,7 +90,7 @@ export function catalogo(modalidade, vedacao) {
         qtd: g => Math.ceil(g.areaFachada * e.membrana.fracao), base: e.membrana.preco }
     ]; })() : modalidade === "metalica" ? (() => { const e = R.estrutura_metalica; return [
       { k: "perfis_pes",   nome: "Perfis estruturais I/H/W",  un: "kg", obr: true,
-        qtd: g => Math.ceil((g.volumeConcretoEstrutura / 2.5) * 1000 * e.perfis_pes.porVolume * w), base: e.perfis_pes.preco }, // Peso do aço em estruturas puras baseadas no preditivo
+        qtd: g => Math.ceil(g.areaTotal * e.perfis_pes.kgPorM2 * w), base: e.perfis_pes.preco },
       { k: "steel_deck",   nome: "Laje steel deck (painel)",  un: "m²", obr: true,
         qtd: g => Math.ceil(g.areaTotal * e.steel_deck.cobertura), base: e.steel_deck.preco },
       { k: "cap_conc",     nome: "Concreto capeamento fck 25", un: "m³",

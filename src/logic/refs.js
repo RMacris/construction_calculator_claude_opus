@@ -81,10 +81,10 @@ const REFS = {
 
   // ── Estrutura — Metálica ──────────────────────────────────────────────
   estrutura_metalica: {
-    perfis_pes:  { preco: 22,  porVolume: 2.2 }, // Aço em t por m³ de bloco fênix equivalente?
+    perfis_pes:  { preco: 22,  kgPorM2: 60 },
     steel_deck:  { preco: 145, cobertura: 0.95 },
     cap_conc:    { preco: 360, espessura: 0.10 },
-    solda_chumb: { preco: 88, porPilar: 8 },
+    solda_chumb: { preco: 88 },
   },
 
   // ── Estrutura — Convencional ──────────────────────────────────────────
@@ -108,7 +108,7 @@ const REFS = {
     gesso:      { preco: 38,  chapasPorFace: 2.05, dims: { largura: 1.2, altura: 2.4, un: "m" } },
     perfis_dry: { preco: 13,  porM2: 2.8 },
     massa_fita: { preco: 16,  faces: 2 },
-    la_vidro:   { preco: 30,  fracao: 1.0 },
+    la_vidro:   { preco: 30,  fracao: 0.4 },
   },
 
   // ── Vedação — Drywall Acústico ────────────────────────────────────────
