@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CORES } from "../constants.js";
 import { fmtBRL, fmtN } from "../utils.js";
 import { NumInput } from "./NumInput.jsx";
+import { MaterialModal } from "./MaterialModal.jsx";
 
 const cellInp = {
   width: "100%", padding: "3px 5px", fontSize: 11,
@@ -10,7 +11,7 @@ const cellInp = {
 };
 const cellInpL = { ...cellInp, textAlign: "left" };
 
-function MaterialRow({ m, ed, e, over, setOver, customList }) {
+function MaterialRow({ m, ed, e, over, setOver, customList, onOpenModal }) {
   const idxCustom = m.custom ? customList.findIndex(c => c.key === m.key) : -1;
 
   const setPreco = (key, v) => setOver({ ...over, precos: { ...(over.precos || {}), [key]: v } });
@@ -39,7 +40,16 @@ function MaterialRow({ m, ed, e, over, setOver, customList }) {
             onChange={ev => setCustomField(e.id, idxCustom, "nome", ev.target.value)}
             style={cellInpL} />
         ) : (
-          <span>{m.nome}{m.custom && <span style={{ color: "#db2777", fontSize: 10 }}> ✚</span>}</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {m.obr && <span className="badge-obr" title="Obrigatório">●</span>}
+            {m.nome}
+            {m.custom && <span style={{ color: "#db2777", fontSize: 10 }}> ✚</span>}
+            {m.dims && ed && (
+              <button onClick={() => onOpenModal(m)} title="Editar dimensões"
+                style={{ border: "none", background: "transparent", cursor: "pointer",
+                         color: "#3b82f6", fontSize: 12, padding: 0, marginLeft: 2 }}>⚙</button>
+            )}
+          </span>
         )}
       </td>
       <td style={{ padding: 4, textAlign: "right" }}>
@@ -82,12 +92,16 @@ function MaterialRow({ m, ed, e, over, setOver, customList }) {
       </td>
       {ed && (
         <td style={{ padding: 4, textAlign: "center" }}>
-          <button
-            onClick={() => m.custom ? removerCustom(e.id, idxCustom) : remover(m.key)}
-            title="Remover"
-            style={{ border: "none", background: "transparent",
-                     color: "#dc2626", cursor: "pointer", fontSize: 14,
-                     padding: 0, lineHeight: 1 }}>✕</button>
+          {!m.obr ? (
+            <button
+              onClick={() => m.custom ? removerCustom(e.id, idxCustom) : remover(m.key)}
+              title="Remover"
+              style={{ border: "none", background: "transparent",
+                       color: "#dc2626", cursor: "pointer", fontSize: 14,
+                       padding: 0, lineHeight: 1 }}>✕</button>
+          ) : (
+            <span title="Material obrigatório" style={{ color: "#94a3b8", fontSize: 12 }}>🔒</span>
+          )}
         </td>
       )}
     </tr>
@@ -97,6 +111,7 @@ function MaterialRow({ m, ed, e, over, setOver, customList }) {
 function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
   const [expanded, setExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [modalMat, setModalMat] = useState(null);
   const pct = e.valor / (custoTotal || 1);
   const customList = (over.custom || {})[e.id] || [];
 
@@ -109,6 +124,20 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
     });
     custom[e.id] = arr;
     setOver({ ...over, custom });
+  };
+
+  const handleModalSave = (result) => {
+    if (!modalMat) return;
+    const key = modalMat.key;
+    const next = { ...over };
+    // Preço
+    next.precos = { ...(next.precos || {}), [key]: result.preco };
+    // Dims
+    if (result.dims) {
+      next.dims = { ...(next.dims || {}), [key]: result.dims };
+    }
+    setOver(next);
+    setModalMat(null);
   };
 
   return (
@@ -156,7 +185,8 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
               <tbody>
                 {e.mats.map((m) => (
                   <MaterialRow key={m.key} m={m} ed={editMode} e={e}
-                               over={over} setOver={setOver} customList={customList} />
+                               over={over} setOver={setOver} customList={customList}
+                               onOpenModal={setModalMat} />
                 ))}
               </tbody>
             </table>
@@ -168,6 +198,10 @@ function EtapaRow({ e, i, cor, over, setOver, maxPct, custoTotal }) {
                 borderRadius: 4, background: "#fff", cursor: "pointer", color: "#475569"
               }}>+ Adicionar material</button>
             </div>
+          )}
+          {modalMat && (
+            <MaterialModal mat={modalMat} onClose={() => setModalMat(null)}
+                           onSave={handleModalSave} />
           )}
         </div>
       )}

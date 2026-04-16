@@ -18,13 +18,16 @@ export function calcular(inp, over, bdi = BDI_PADRAO) {
   const precos    = over.precos    || {};
   const qtds      = over.qtds      || {};
   const custom    = over.custom    || {};
+  const dimsOver  = over.dims      || {};
 
   const etapas = cat.map(et => {
     const matsCat = et.mats
-      .filter(m => !removidos[`${et.id}.${m.k}`])
+      .filter(m => m.obr || !removidos[`${et.id}.${m.k}`])
       .map(m => {
         const key = `${et.id}.${m.k}`;
-        const qtdCalc = m.qtd(g);
+        // Mesclar dims: override do usuário sobre dims padrão do catálogo
+        const dims = m.dims ? { ...m.dims, ...(dimsOver[key] || {}) } : undefined;
+        const qtdCalc = m.dims ? m.qtd(g, dims) : m.qtd(g);
         const qtd = qtds[key] !== undefined ? num(qtds[key]) : qtdCalc;
         // Preço unitário: usa override do usuário, ou preço base do catálogo (sem multiplicador)
         const punit = precos[key] !== undefined ? num(precos[key]) : m.base;
@@ -32,7 +35,10 @@ export function calcular(inp, over, bdi = BDI_PADRAO) {
           key, nome: m.nome, un: m.un, qtd, punit,
           subtotal: qtd * punit,
           auto: qtds[key] === undefined,
-          custom: false
+          custom: false,
+          obr: !!m.obr,
+          dims: dims,
+          dimsDefault: m.dims
         };
       });
     const matsCustom = (custom[et.id] || []).map(c => ({
