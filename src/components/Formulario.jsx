@@ -49,9 +49,8 @@ export function Formulario({ titulo, cor, inp, setInp, preset, setPreset, custom
   };
 
   return (
-    <div style={{
-      background: "#fff", border: `2px solid ${cor}`, borderRadius: 10,
-      padding: 14, flex: 1, minWidth: 280
+    <div className="panel-card" style={{
+      background: "#fff", border: `2px solid ${cor}`, flex: 1, minWidth: 280
     }}>
       <h3 style={{ margin: "0 0 10px", color: cor, fontSize: 15 }}>{titulo}</h3>
 

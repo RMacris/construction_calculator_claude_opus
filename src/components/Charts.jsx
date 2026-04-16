@@ -8,7 +8,7 @@ import { fmtBRL } from "../utils.js";
 export function PieChartPanel({ etapas, titulo, cor }) {
   const data = etapas.map(e => ({ name: e.nome, value: e.valor }));
   return (
-    <div style={{ background: "#fff", borderRadius: 10, padding: 12 }}>
+    <div className="panel-card-sm" style={{ background: "#fff" }}>
       <h3 style={{ margin: "0 0 8px", fontSize: 14, color: cor }}>{titulo}</h3>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
@@ -38,7 +38,7 @@ export function ComparisonBarChart({ resA, resB }) {
   });
 
   return (
-    <div style={{ background: "#fff", borderRadius: 10, padding: 12 }}>
+    <div className="panel-card-sm" style={{ background: "#fff" }}>
       <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Comparação A vs B por etapa</h3>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={barData}>

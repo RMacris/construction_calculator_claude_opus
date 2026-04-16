@@ -13,8 +13,8 @@ export function Resumo({ titulo, cor, inp, res, over, setOver, preset }) {
     alertas.push("Nenhum apto cabe no pavimento — reduza área do apto ou aumente área do pavimento.");
 
   return (
-    <div style={{
-      background: "#fff", border: `2px solid ${cor}`, borderRadius: 10, padding: 14, flex: 1, minWidth: 280
+    <div className="panel-card" style={{
+      background: "#fff", border: `2px solid ${cor}`, flex: 1, minWidth: 280
     }}>
       <h3 style={{ margin: "0 0 10px", color: cor, fontSize: 15 }}>{titulo}</h3>
       {alertas.map((a, i) => (

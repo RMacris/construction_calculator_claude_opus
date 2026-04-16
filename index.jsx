@@ -45,9 +45,9 @@ export default function SimuladorConstrucao() {
   const resB = useMemo(() => calcular(inpB, overB, presetB, num(customM2B)), [inpB, overB, presetB, customM2B]);
 
   return (
-    <div style={{
+    <div className="app-wrapper" style={{
       fontFamily: "system-ui, -apple-system, sans-serif",
-      background: "#f1f5f9", minHeight: "100vh", padding: 16, color: "#0f172a"
+      background: "#f1f5f9", minHeight: "100vh", color: "#0f172a"
     }}>
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
         <header style={{ marginBottom: 16 }}>
@@ -91,7 +91,7 @@ export default function SimuladorConstrucao() {
         </div>
 
         {comparar && (
-          <div style={{ marginTop: 16, background: "#fff", borderRadius: 10, padding: 14 }}>
+          <div className="panel-card" style={{ marginTop: 16, background: "#fff" }}>
             <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Diferença A → B</h3>
             <div className="grid-cols-4">
               <Metric label="Δ Custo total"
