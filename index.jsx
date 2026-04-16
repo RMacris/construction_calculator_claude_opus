@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { defaultInp, defaultInpB } from "./src/constants.js";
+import { defaultInp, defaultInpB, BDI_PADRAO } from "./src/constants.js";
 import { fmtBRL, fmtN, num } from "./src/utils.js";
 import { calcular } from "./src/logic/calcular.js";
 import { Formulario } from "./src/components/Formulario.jsx";
@@ -23,10 +23,8 @@ export default function SimuladorConstrucao() {
   const saved = loadState();
   const [inpA, setInpA] = useState(saved?.inpA ?? defaultInp);
   const [inpB, setInpB] = useState(saved?.inpB ?? defaultInpB);
-  const [presetA, setPresetA] = useState(saved?.presetA ?? "ultraEcon");
-  const [presetB, setPresetB] = useState(saved?.presetB ?? "popular");
-  const [customM2A, setCustomM2A] = useState(saved?.customM2A ?? "");
-  const [customM2B, setCustomM2B] = useState(saved?.customM2B ?? "");
+  const [bdiA, setBdiA] = useState(saved?.bdiA ?? BDI_PADRAO);
+  const [bdiB, setBdiB] = useState(saved?.bdiB ?? BDI_PADRAO);
   const [overA, setOverA] = useState(saved?.overA ?? {});
   const [overB, setOverB] = useState(saved?.overB ?? {});
   const [comparar, setComparar] = useState(saved?.comparar ?? false);
@@ -34,15 +32,15 @@ export default function SimuladorConstrucao() {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        inpA, inpB, presetA, presetB, customM2A, customM2B, overA, overB, comparar
+        inpA, inpB, bdiA, bdiB, overA, overB, comparar
       }));
     } catch {
       // storage quota exceeded or unavailable — fail silently
     }
-  }, [inpA, inpB, presetA, presetB, customM2A, customM2B, overA, overB, comparar]);
+  }, [inpA, inpB, bdiA, bdiB, overA, overB, comparar]);
 
-  const resA = useMemo(() => calcular(inpA, overA, presetA, num(customM2A)), [inpA, overA, presetA, customM2A]);
-  const resB = useMemo(() => calcular(inpB, overB, presetB, num(customM2B)), [inpB, overB, presetB, customM2B]);
+  const resA = useMemo(() => calcular(inpA, overA, bdiA), [inpA, overA, bdiA]);
+  const resB = useMemo(() => calcular(inpB, overB, bdiB), [inpB, overB, bdiB]);
 
   return (
     <div className="app-wrapper" style={{
@@ -55,7 +53,7 @@ export default function SimuladorConstrucao() {
             Simulador de Custo de Construção — Edifício Residencial
           </h1>
           <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-            Custo bottom-up: geometria × preço unitário. Referência CUB/SINAPI 2025-2026 (custos diretos, sem BDI/honorários).
+            Custo bottom-up: geometria × preço unitário real. K<sub>util</sub> {"\u00A0"}80% · Fator forma 1,15 · Referência SINAPI/CUB 2025.
           </p>
           <label style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 8, fontSize: 13 }}>
             <input type="checkbox" checked={comparar} onChange={e => setComparar(e.target.checked)} />
@@ -65,13 +63,11 @@ export default function SimuladorConstrucao() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
           <Formulario titulo="Cenário A" cor="#2563eb" inp={inpA} setInp={setInpA}
-                      preset={presetA} setPreset={setPresetA}
-                      customM2={customM2A} setCustomM2={setCustomM2A}
+                      bdi={bdiA} setBdi={setBdiA}
                       onResetPrecos={() => setOverA({})} />
           {comparar &&
             <Formulario titulo="Cenário B" cor="#db2777" inp={inpB} setInp={setInpB}
-                        preset={presetB} setPreset={setPresetB}
-                        customM2={customM2B} setCustomM2={setCustomM2B}
+                        bdi={bdiB} setBdi={setBdiB}
                         onResetPrecos={() => setOverB({})} />}
         </div>
 
@@ -84,10 +80,10 @@ export default function SimuladorConstrucao() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           <Resumo titulo="Resumo — Cenário A" cor="#2563eb" inp={inpA} res={resA}
-                  over={overA} setOver={setOverA} preset={presetA} />
+                  over={overA} setOver={setOverA} />
           {comparar &&
             <Resumo titulo="Resumo — Cenário B" cor="#db2777" inp={inpB} res={resB}
-                    over={overB} setOver={setOverB} preset={presetB} />}
+                    over={overB} setOver={setOverB} />}
         </div>
 
         {comparar && (

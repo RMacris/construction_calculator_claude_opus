@@ -18,6 +18,19 @@ export const VEDACOES = {
   steelframeInterno: { label: "Steel Frame + cimentícia" }
 };
 
+// BDI padrão: 25% (bonificações e despesas indiretas)
+// Inclui: administração central, lucro, impostos, seguros, garantias
+export const BDI_PADRAO = 0.25;
+
+// Referências CUB/SINAPI para comparação (R$/m² - valores médios nacionais 2025)
+export const CUB_REFERENCIAS = {
+  r1b:  { label: "CUB R1-B (Popular 1 pav.)",     custoM2: 1850 },
+  pp4n: { label: "CUB PP4-N (Médio multi-pav.)",   custoM2: 2400 },
+  r8a:  { label: "CUB R8-A (Alto multi-pav.)",     custoM2: 3100 },
+  r16a: { label: "CUB R16-A (Alto 16+ pav.)",      custoM2: 3500 }
+};
+
+// Mantido para retrocompatibilidade de localStorage (não usado no cálculo)
 export const PRESETS = {
   ultraEcon: { label: "Ultraeconômico",  custoM2: 1000 },
   popular:   { label: "Popular",         custoM2: 1500 },
